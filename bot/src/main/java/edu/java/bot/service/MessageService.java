@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.model.SessionState;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
-//import edu.java.bot.url_processor.UrlProcessor;
+import edu.java.bot.url_processor.UrlProcessor;
 import edu.java.bot.users.User;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,16 +23,16 @@ public class MessageService {
 
     private final CommandHandler commandHandler;
     private final UserService userRepository;
-//    private final UrlProcessor urlProcessor;
+    private final UrlProcessor urlProcessor;
 
     public MessageService(
         CommandHandler commandHandler,
-        UserService userRepository
-//        UrlProcessor urlProcessor
+        UserService userRepository,
+        UrlProcessor urlProcessor
     ) {
         this.commandHandler = commandHandler;
         this.userRepository = userRepository;
-//        this.urlProcessor = urlProcessor;
+        this.urlProcessor = urlProcessor;
     }
 
     public String prepareResponseMessage(Update update) {
@@ -51,8 +51,20 @@ public class MessageService {
 
         var user = userOptional.get();
         try {
-            var url = new URI(text);
-            return processStateUserMessage(user, url);
+            if (!user.getState().equals(SessionState.BASE_STATE)) {
+                URI uri = new URI(text);
+                String host = uri.getHost();
+                if (host == null) {
+                    return INVALID_URI_MESSAGE;
+                }
+                if (urlProcessor.isValidUrl(uri)) {
+                    return processStateUserMessage(user, uri);
+                }
+                return INVALID_FOR_TRACK_SITE_MESSAGE; //TODO исправить правильные, но неподдерживаемые сайты
+            }
+            else {
+                return INVALID_COMMAND_MESSAGE;
+            }
 
         } catch (URISyntaxException e) {
             return INVALID_URI_MESSAGE;
@@ -70,20 +82,18 @@ public class MessageService {
         return INVALID_COMMAND_MESSAGE;
     }
 
-    private String prepareWaitTrackingMessage(User user, URI url) {
-        if (true) {
-            return (updateUserTrackingSites(user, url)) ? SUCCESS_TRACK_SITE_MESSAGE
+    private String prepareWaitTrackingMessage(User user, URI uri) {
+        if (urlProcessor.isValidUrl(uri)) {
+            return (updateUserTrackingSites(user, uri)) ? SUCCESS_TRACK_SITE_MESSAGE
                 : DUPLICATE_TRACKING_MESSAGE;
-
         }
         return INVALID_FOR_TRACK_SITE_MESSAGE;
     }
 
-    private String prepareWaitUnTrackingMessage(User user, URI url) {
-        if (true) {
-            return (deleteTrackingSites(user, url)) ? "Ресурс более не отслеживается."
+    private String prepareWaitUnTrackingMessage(User user, URI uri) {
+        if (urlProcessor.isValidUrl(uri)) {
+            return (deleteTrackingSites(user, uri)) ? "Ресурс более не отслеживается."
                 : "Вы не отслеживали данный ресурс.";
-
         }
         return INVALID_FOR_TRACK_SITE_MESSAGE;
     }
