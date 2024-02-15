@@ -35,7 +35,7 @@ public class CommandStart implements Command {
         return registerUser(chatId);
     }
 
-    private String registerUser(long chatId) {
+    public String registerUser(long chatId) {
         var userOptional = userService.findUserById(chatId);
 
         if (userOptional.isEmpty()) {

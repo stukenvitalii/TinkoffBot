@@ -21,6 +21,16 @@ class CommandHelpTest {
     private CommandHelp commandHelp;
 
     @Test
+    void command() {
+        assertEquals("/help",commandHelp.command());
+    }
+
+    @Test
+    void description() {
+        assertEquals("Выводит доступные команды.", commandHelp.description());
+    }
+
+    @Test
     public void testHandle_withEmptyList() {
         when(mockCommandList.isEmpty()).thenReturn(true);
 
