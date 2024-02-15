@@ -10,6 +10,7 @@ public class CommandList implements Command {
 
     private final String unknownUser = "Пользователь не существует. Зарегистрируйтесь с помощью команды /start";
     private final String emptyList = "Вы не отслеживаете ни одной ссылки";
+
     public CommandList(UserService userService) {
         this.userService = userService;
     }

@@ -55,19 +55,17 @@ public class MessageService {
                 URI uri = new URI(text);
                 String host = uri.getHost();
                 if (host == null) {
-                    return INVALID_URI_MESSAGE;
+                    throw new URISyntaxException(text, INVALID_URI_MESSAGE);
                 }
                 if (urlProcessor.isValidUrl(uri)) {
                     return processStateUserMessage(user, uri);
                 }
-                return INVALID_FOR_TRACK_SITE_MESSAGE; //TODO исправить правильные, но неподдерживаемые сайты
+                throw new URISyntaxException(text, INVALID_FOR_TRACK_SITE_MESSAGE);
+            } else {
+                throw new URISyntaxException(text, INVALID_COMMAND_MESSAGE);
             }
-            else {
-                return INVALID_COMMAND_MESSAGE;
-            }
-
         } catch (URISyntaxException e) {
-            return INVALID_URI_MESSAGE;
+            return e.getReason();
         }
     }
 

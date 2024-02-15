@@ -1,6 +1,6 @@
 package edu.java.bot.url_processor;
 
-public class GitHubUrlProcessor extends UrlProcessor{
+public class GitHubUrlProcessor extends UrlProcessor {
 
     public GitHubUrlProcessor(UrlProcessor urlProcessor) {
         super(urlProcessor);
