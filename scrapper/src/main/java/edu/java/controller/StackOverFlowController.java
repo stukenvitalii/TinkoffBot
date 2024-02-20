@@ -35,7 +35,7 @@ public class StackOverFlowController {
     }
 
     @GetMapping("/questions/search/{title}")
-    public Flux<StackOverFlowQuestion> getListOfQuestionsWithSpecifiedTitle(@PathVariable String title) {
+    public Flux<StackOverFlowQuestion> getListOfQuestionsWithSpecifiedTitle(@PathVariable("title") String title) {
         return webClientBuilder
             .build()
             .get()
