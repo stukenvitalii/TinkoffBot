@@ -24,7 +24,7 @@ public class StackOverFlowController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/question/{id}")
+    @GetMapping("/questions/{id}")
     public Mono<StackOverFlowQuestion> getQuestion(@PathVariable("id") String id) {
         return  webClientBuilder.
             build()
@@ -32,10 +32,9 @@ public class StackOverFlowController {
             .uri("/questions/{id}?order=desc&sort=activity&site=stackoverflow&key={apiKey}", id, "apiKey") //TODO wtf?
             .retrieve()
             .bodyToMono(StackOverFlowQuestion.class);
-
     }
 
-    @GetMapping("/question/search/{title}")
+    @GetMapping("/questions/search/{title}")
     public Flux<StackOverFlowQuestion> getListOfQuestionsWithSpecifiedTitle(@PathVariable String title) {
         return webClientBuilder
             .build()

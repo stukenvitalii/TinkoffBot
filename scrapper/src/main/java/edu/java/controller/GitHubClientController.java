@@ -31,7 +31,7 @@ public class GitHubClientController {
             .block();
     }
 
-    @GetMapping("/{name}/repos")
+    @GetMapping("/users/{name}/repos")
     public Mono<List<GitHubRepository>> getRepositories(@PathVariable("name") String name) {
         return webClientBuilder.build()
             .get()
