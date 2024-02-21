@@ -5,6 +5,7 @@ import edu.java.dto.StackOverFlowQuestion;
 import edu.java.dto.StackOverFlowResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,21 +17,24 @@ import reactor.core.publisher.Flux;
 @RestController
 public class StackOverFlowController {
 
+    @Qualifier("stackOverFlowClient")
     @Autowired
-    private WebClient.Builder webClientBuilder;
+    private WebClient webClient;
     private final ObjectMapper objectMapper;
 
     public StackOverFlowController(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping(value = {"/questions/{id}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Flux<StackOverFlowQuestion> getQuestionById(@PathVariable("id") Long id) {
-        return webClientBuilder
-            .build()
+        return webClient
             .get()
-            .uri("https://api.stackexchange.com/2.3/questions/{id}?order=desc&sort=activity&site=stackoverflow", id)
-            .accept(MediaType.APPLICATION_JSON)
+            .uri(x -> x.path("/questions/{id}")
+                .queryParam("order", "desc")
+                .queryParam("sort", "activity")
+                .queryParam("site", "stackoverflow")
+                .build(id))
             .retrieve()
             .bodyToMono(String.class)
             .<List<StackOverFlowQuestion>>handle((json, sink) -> {
