@@ -56,8 +56,6 @@ class CommandTrackTest {
         when(userService.findUserById(chatId)).thenReturn(optionalMockUser);
 
         assertEquals(trackMessage, commandTrack.handle(update));
-
-        //TODO дописать verify на кол-во вызовов
     }
 
     @Test

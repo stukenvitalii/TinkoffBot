@@ -56,8 +56,6 @@ class CommandUntrackTest {
         when(userService.findUserById(chatId)).thenReturn(optionalMockUser);
 
         assertEquals(untrackMessage, commandUntrack.handle(update));
-
-        //TODO дописать verify на кол-во вызовов
     }
 
     @Test

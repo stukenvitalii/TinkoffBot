@@ -51,8 +51,6 @@ class CommandStartTest {
         when(userService.findUserById(chatId)).thenReturn(optionalMockUser);
 
         assertEquals("Вы уже зарегистрированы в боте!", commandStart.handle(update));
-
-        //TODO дописать verify на кол-во вызовов
     }
 
     @Test
