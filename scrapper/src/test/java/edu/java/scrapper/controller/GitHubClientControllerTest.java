@@ -1,47 +1,48 @@
 package edu.java.scrapper.controller;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import edu.java.ScrapperApplication;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static io.restassured.RestAssured.given;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ScrapperApplication.class})
 @WireMockTest
 public class GitHubClientControllerTest {
 
-    WireMockServer wireMockServer;
+    @Autowired
+    private WebTestClient webTestClient;
 
-    @BeforeEach
-    public void setup () {
-        wireMockServer = new WireMockServer(8080);
-        wireMockServer.start();
-        setupStub();
-    }
+    @RegisterExtension
+    static WireMockExtension wireMockExtension = WireMockExtension
+        .newInstance()
+        .options(wireMockConfig().dynamicPort().dynamicPort())
+        .build();
 
-    @AfterEach
-    public void teardown () {
-        wireMockServer.stop();
-    }
-
-    public void setupStub() {
-        wireMockServer.stubFor(get(urlEqualTo("/repos/stukenvitalii/TinkoffBot"))
-            .willReturn(aResponse().withHeader("Content-Type", "text/plain")
-                .withStatus(200)
-                .withBodyFile("json/glossary.json")));
+    @DynamicPropertySource
+    public static void setUpMockBaseUrl(DynamicPropertyRegistry registry) {
+        registry.add("git-hub-base-url", wireMockExtension::baseUrl);
     }
 
     @Test
     public void testStatusCodePositive() {
-        given().
-            when().
-            get("http://localhost:8080/repos/stukenvitalii/TinkoffBot").
-            then().
-            assertThat().statusCode(200);
+        wireMockExtension.stubFor(WireMock.get(
+            "/repos/stukenvitalii/TinkoffBot"
+        ).willReturn(aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)));
+        webTestClient.get().uri("/repos/stukenvitalii/TinkoffBot")
+            .exchange()
+            .expectStatus()
+            .isOk();
     }
 }
