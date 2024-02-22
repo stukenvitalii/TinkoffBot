@@ -42,22 +42,6 @@ public class GitHubClientControllerTest {
         wireMockExtension.resetAll();
     }
 
-//    @Test
-//    public void testStatusIfUnauthorized() {
-//        wireMockExtension.stubFor(WireMock.get(
-//                "/repos/stukenvitalii/TinkoffBot"
-//            )
-//            .willReturn(aResponse()
-//                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-//                .withBody("{}")
-//                .withStatus(401)));
-//
-//        webTestClient.get().uri("/repos/stukenvitalii/TinkoffBot")
-//            .exchange()
-//            .expectStatus()
-//            .is5xxServerError();
-//    }
-
     @Test
     public void testStatusCodePositive() {
         wireMockExtension.stubFor(WireMock.get(
