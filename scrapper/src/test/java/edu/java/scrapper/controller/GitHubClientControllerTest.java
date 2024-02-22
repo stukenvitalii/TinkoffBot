@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.ScrapperApplication;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -36,8 +37,12 @@ public class GitHubClientControllerTest {
         registry.add("git-hub-base-url", wireMockExtension::baseUrl);
     }
 
+    @AfterEach
+    void afterEach() {
+        wireMockExtension.resetAll();
+    }
+
 //    @Test
-//    @Order(0)
 //    public void testStatusIfUnauthorized() {
 //        wireMockExtension.stubFor(WireMock.get(
 //                "/repos/stukenvitalii/TinkoffBot"
@@ -54,7 +59,6 @@ public class GitHubClientControllerTest {
 //    }
 
     @Test
-    @Order(1)
     public void testStatusCodePositive() {
         wireMockExtension.stubFor(WireMock.get(
             "/repos/stukenvitalii/TinkoffBot"
@@ -70,7 +74,6 @@ public class GitHubClientControllerTest {
     }
 
     @Test
-    @Order(2)
     public void testGetValidJson() {
         wireMockExtension.stubFor(WireMock.get(
                 "/repos/stukenvitalii/TinkoffBot"
@@ -88,7 +91,6 @@ public class GitHubClientControllerTest {
     }
 
     @Test
-    @Order(3)
     public void testIncorrectUrl() {
         wireMockExtension.stubFor(WireMock.get(
                 "/repos/stukenvitalii/TinkoffBot1"
