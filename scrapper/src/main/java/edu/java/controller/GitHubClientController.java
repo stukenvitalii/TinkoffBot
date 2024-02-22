@@ -22,7 +22,7 @@ public class GitHubClientController {
     ) {
         return webClient
             .get()
-            .uri(x-> x.path("/repos/{name}/{reposName}")
+            .uri(x -> x.path("/repos/{name}/{reposName}")
                 .build(name, reposName))
             .retrieve()
             .bodyToMono(GitHubRepository.class)
