@@ -6,13 +6,15 @@ import edu.java.dto.StackOverFlowResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
-
+import reactor.core.publisher.Mono;
 
 @RestController
 public class StackOverFlowController {
@@ -27,7 +29,7 @@ public class StackOverFlowController {
     }
 
     @GetMapping(value = {"/questions/{id}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Flux<StackOverFlowQuestion> getQuestionById(@PathVariable("id") Long id) {
+    public Mono<StackOverFlowQuestion> getQuestionById(@PathVariable("id") Long id) {
         return webClient
             .get()
             .uri(x -> x.path("/questions/{id}")
@@ -36,15 +38,20 @@ public class StackOverFlowController {
                 .queryParam("site", "stackoverflow")
                 .build(id))
             .retrieve()
-            .bodyToMono(String.class)
-            .<List<StackOverFlowQuestion>>handle((json, sink) -> {
-                try {
-                    StackOverFlowResponse response = objectMapper.readValue(json, StackOverFlowResponse.class);
-                    sink.next(response.getItems());
-                } catch (Exception e) {
-                    sink.error(new RuntimeException("Failed to parse JSON response", e));
+            .bodyToMono(StackOverFlowResponse.class)
+            .flatMap(response -> {
+                if (response.getItems() != null && !response.getItems().isEmpty()) {
+                    return Mono.just(response.getItems().get(0));
+                } else {
+                    return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found for id: " + id));
                 }
             })
-            .flatMapIterable(items -> items); //TODO сделать ответ в виде объекта, а не списка!
+            .onErrorResume(e -> {
+                if (e instanceof ResponseStatusException) {
+                    return Mono.error(e);
+                } else {
+                    return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
+                }
+            });
     }
 }

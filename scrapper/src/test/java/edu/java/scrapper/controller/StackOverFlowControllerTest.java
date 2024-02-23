@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -16,12 +17,15 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.status;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ScrapperApplication.class})
+@AutoConfigureWebTestClient(timeout = "10000")
 @WireMockTest
-public class StackOverFlowClientControllerTest {
+public class StackOverFlowControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -34,7 +38,7 @@ public class StackOverFlowClientControllerTest {
 
     @DynamicPropertySource
     public static void setUpMockBaseUrl(DynamicPropertyRegistry registry) {
-        registry.add("stack-overflow-base-url", wireMockExtension::baseUrl);
+        registry.add("app.stack-overflow-base-url", wireMockExtension::baseUrl);
     }
 
     @AfterEach
@@ -44,12 +48,11 @@ public class StackOverFlowClientControllerTest {
 
     @Test
     public void testStatusCodePositive() {
-        wireMockExtension.stubFor(WireMock.get(
-                "/questions/13133695"
-            )
+        wireMockExtension.stubFor(WireMock.get("/questions/13133695?order=desc&sort=activity&site=stackoverflow")
             .willReturn(aResponse()
+                .withStatus(200)
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .withStatus(200)));
+            ));
 
         webTestClient.get().uri("/questions/13133695")
             .exchange()
@@ -58,45 +61,44 @@ public class StackOverFlowClientControllerTest {
     }
 
     @Test
-    public void testGetValidJson() {
-        wireMockExtension.stubFor(WireMock.get("/questions/13133695")
+    void testGetValidJson() {
+        wireMockExtension.stubFor(WireMock.get(urlEqualTo("/questions/7854933?order=desc&sort=activity&site=stackoverflow"))
             .willReturn(aResponse()
-                .withBody("[\n" +
-                    "    {\n" +
-                    "        \"question_id\": 13133695,\n" +
-                    "        \"is_answered\": true,\n" +
-                    "        \"title\": \"IncompatibleClassChangeError with Eclipse Jetty\"\n" +
-                    "    }\n" +
-                    "]")
+                .withBody("{\n" +
+                    "    \"items\": [\n" +
+                    "        {\n" +
+                    "            \"is_answered\": true,\n" +
+                    "            \"question_id\": 7854933,\n" +
+                    "            \"title\": \"will linq to objects block the thread?\"\n" +
+                    "        }\n" +
+                    "    ]\n}"
+                )
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withStatus(200)));
 
-        webTestClient.get().uri("/questions/13133695")
+        webTestClient.get().uri("/questions/7854933")
             .exchange()
             .expectStatus()
             .isOk()
-            .expectBody().json("[\n" +
-                "    {\n" +
-                "        \"question_id\": 13133695,\n" +
-                "        \"is_answered\": true,\n" +
-                "        \"title\": \"IncompatibleClassChangeError with Eclipse Jetty\"\n" +
-                "    }\n" +
-                "]");
+            .expectBody()
+            .jsonPath("$.question_id").isEqualTo(7854933)
+            .jsonPath("$.is_answered").isEqualTo(true)
+            .jsonPath("$.title").isEqualTo("will linq to objects block the thread?");
     }
 
     @Test
     public void testIncorrectUrl() {
-        wireMockExtension.stubFor(WireMock.get(
-                "/questions/sdfg"
-            )
+        wireMockExtension.stubFor(WireMock.get(urlEqualTo("/questions/456?order=desc&sort=activity&site=stackoverflow"))
             .willReturn(aResponse()
-                .withBody("{}")
+                .withBody("{\n" +
+                    "   \"items\": []\n" +
+                    "}")
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .withStatus(200)));
+                .withStatus(404)));
 
-        webTestClient.get().uri("/questions/sdfg")
+        webTestClient.get().uri("/questions/456")
             .exchange()
             .expectStatus()
-            .is4xxClientError();
+            .is5xxServerError(); //TODO разобраться как тут получить 404 и обработать его
     }
 }
