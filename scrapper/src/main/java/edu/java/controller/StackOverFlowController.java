@@ -39,7 +39,7 @@ public class StackOverFlowController {
             .bodyToMono(StackOverFlowResponse.class)
             .flatMap(response -> {
                 if (response.getItems() != null && !response.getItems().isEmpty()) {
-                    return Mono.just(response.getItems().get(0));
+                    return Mono.just(response.getItems().getFirst());
                 } else {
                     return Mono.error(new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Question not found for id: " + id));
