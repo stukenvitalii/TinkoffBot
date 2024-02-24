@@ -3,8 +3,8 @@ app:
   stack-overflow-base-url: "https://api.stackexchange.com/2.3"
   scheduler:
     enable: true
-    interval: 5000
-    force-check-delay: 5000
+    interval: 10s
+    force-check-delay: 10s
 
 spring:
   application:
