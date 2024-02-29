@@ -12,9 +12,7 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotNull
     @Bean
-    Scheduler scheduler,
-    @NotEmpty String gitHubBaseUrl,
-    @NotEmpty String stackOverFlowBaseUrl) {
+    Scheduler scheduler) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 }
