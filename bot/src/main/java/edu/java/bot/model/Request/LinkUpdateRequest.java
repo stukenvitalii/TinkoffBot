@@ -5,9 +5,11 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
-@Validated
+@Setter @Getter @Validated
 
 public class LinkUpdateRequest {
     @JsonProperty("id")
@@ -23,17 +25,16 @@ public class LinkUpdateRequest {
     @Valid
     private List<Long> tgChatIds = null;
 
+    public LinkUpdateRequest(Long id, String url, String description, List<Long> tgChatIds) {
+        this.id = id;
+        this.url = url;
+        this.description = description;
+        this.tgChatIds = tgChatIds;
+    }
+
     public LinkUpdateRequest id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LinkUpdateRequest url(String url) {
@@ -41,25 +42,9 @@ public class LinkUpdateRequest {
         return this;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public LinkUpdateRequest description(String description) {
         this.description = description;
         return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LinkUpdateRequest tgChatIds(List<Long> tgChatIds) {
@@ -73,14 +58,6 @@ public class LinkUpdateRequest {
         }
         this.tgChatIds.add(tgChatIdsItem);
         return this;
-    }
-
-    public List<Long> getTgChatIds() {
-        return tgChatIds;
-    }
-
-    public void setTgChatIds(List<Long> tgChatIds) {
-        this.tgChatIds = tgChatIds;
     }
 
     @Override

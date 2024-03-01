@@ -1,6 +1,9 @@
 package edu.java.bot.service;
 
 import com.pengrad.telegrambot.model.Update;
+import edu.java.bot.model.BotClient;
+import edu.java.bot.model.Request.AddLinkRequest;
+import edu.java.bot.model.Request.RemoveLinkRequest;
 import edu.java.bot.model.SessionState;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
@@ -11,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class MessageService {
@@ -104,6 +108,7 @@ public class MessageService {
 
         trackSites.add(uri);
         updateTrackSitesAndCommit(user, trackSites);
+        System.out.println(new BotClient(WebClient.builder().build()).addLinkById(user.getId(),new AddLinkRequest().link(uri.toString())));
         return true;
     }
 
@@ -115,6 +120,7 @@ public class MessageService {
 
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
+        System.out.println(new BotClient(WebClient.builder().build()).deleteLinkById(user.getId(),new RemoveLinkRequest().link(uri.toString())));
         return true;
     }
 

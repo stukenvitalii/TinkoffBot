@@ -32,6 +32,6 @@ public class UpdatesApiController implements UpdatesApi {
         @RequestBody LinkUpdateRequest body
     ) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
