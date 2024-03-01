@@ -11,14 +11,12 @@ import java.util.Objects;
  */
 @Validated
 @Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-02-29T17:43:31.402605197Z[GMT]")
-
-
 public class LinkResponse   {
   @JsonProperty("id")
   private Long id = null;
 
   @JsonProperty("url")
-  private String url = null;
+  private String url = null; //TOOD изменить на URL
 
   public LinkResponse id(Long id) {
     this.id = id;

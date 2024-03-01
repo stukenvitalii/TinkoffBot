@@ -40,9 +40,10 @@ public class LinksApiController implements LinksApi {
 
     public ResponseEntity<LinkResponse> linksDelete(
         @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
-        @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
-        ,
-        @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody
+        @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId,
+        @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
+        @Valid
+        @RequestBody
         RemoveLinkRequest body
     ) {
         String accept = request.getHeader("Accept");
@@ -51,7 +52,7 @@ public class LinksApiController implements LinksApi {
                 return new ResponseEntity<LinkResponse>(objectMapper.readValue(
                     "{\n  \"id\" : 0,\n  \"url\" : \"http://example.com/aeiou\"\n}",
                     LinkResponse.class
-                ), HttpStatus.NOT_IMPLEMENTED);
+                ), HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<LinkResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,7 +72,7 @@ public class LinksApiController implements LinksApi {
                 return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
                     "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",
                     ListLinksResponse.class
-                ), HttpStatus.NOT_IMPLEMENTED);
+                ), HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<ListLinksResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,7 +95,7 @@ public class LinksApiController implements LinksApi {
                 return new ResponseEntity<LinkResponse>(objectMapper.readValue(
                     "{\n  \"id\" : 0,\n  \"url\" : \"http://example.com/aeiou\"\n}",
                     LinkResponse.class
-                ), HttpStatus.NOT_IMPLEMENTED);
+                ), HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<LinkResponse>(HttpStatus.INTERNAL_SERVER_ERROR);

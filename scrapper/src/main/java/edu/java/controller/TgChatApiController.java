@@ -39,7 +39,7 @@ public class TgChatApiController implements TgChatApi {
         @PathVariable("id") Long id
     ) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<Void> tgChatIdPost(
@@ -47,7 +47,7 @@ public class TgChatApiController implements TgChatApi {
         Long id
     ) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 }
