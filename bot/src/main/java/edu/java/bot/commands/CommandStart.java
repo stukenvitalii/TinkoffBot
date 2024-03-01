@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-
 public class CommandStart implements Command {
     public static final String SUCCESS_REGISTRATION_MESSAGE = "Регистрация прошла успешно!";
     private static final String ALREADY_REGISTRATED_MESSAGE = "Вы уже зарегистрированы в боте!";
@@ -37,20 +36,16 @@ public class CommandStart implements Command {
         return registerUser(chatId);
     }
 
-    public String registerUser(long chatId) {
+    public String registerUser(long chatId) throws IllegalStateException{
         var userOptional = userService.findUserById(chatId);
 
         if (userOptional.isEmpty()) {
             User user = new User(chatId, List.of(), SessionState.BASE_STATE);
 
-            if (user.getId() == 644124159) {
-                System.out.println(new BotClient(WebClient.builder().build()).deleteChatById(user.getId().toString()));
-            } //TODO написать нормальное использование delete (оно есть??)
-
             userService.saveUser(user);
             System.out.println(new BotClient(WebClient.builder().build()).addChatById(user.getId().toString()));
             return SUCCESS_REGISTRATION_MESSAGE;
         }
-        return ALREADY_REGISTRATED_MESSAGE;
+        throw new IllegalStateException(ALREADY_REGISTRATED_MESSAGE);
     }
 }

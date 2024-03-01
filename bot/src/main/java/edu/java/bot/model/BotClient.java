@@ -2,7 +2,11 @@ package edu.java.bot.model;
 
 import edu.java.bot.model.Request.AddLinkRequest;
 import edu.java.bot.model.Request.RemoveLinkRequest;
+import edu.java.bot.model.Response.ApiErrorResponse;
+import edu.java.bot.model.Response.LinkResponse;
+import edu.java.bot.model.Response.ListLinksResponse;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -16,17 +20,18 @@ public class BotClient {
         this.webClient = webClient;
     }
 
-    public String getLinksById(Long chatId) {
+    public ListLinksResponse getLinksById(Long chatId) {
         return webClient
             .get()
             .uri(BASE_URL + "/links")
             .header("Accept","application/json")
             .header("Tg-Chat-Id", String.valueOf(chatId))
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(ListLinksResponse.class)
             .block();
     }
-    public String addLinkById(Long chatId, AddLinkRequest addLinkRequest) {
+
+    public LinkResponse addLinkById(Long chatId, AddLinkRequest addLinkRequest) {
         return webClient
             .post()
             .uri(BASE_URL + "/links")
@@ -34,11 +39,11 @@ public class BotClient {
             .header("Accept","application/json")
             .header("Tg-Chat-Id", String.valueOf(chatId))
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(LinkResponse.class)
             .block();
     }
 
-    public String deleteLinkById(Long chatId, RemoveLinkRequest removeLinkRequest) {
+    public LinkResponse deleteLinkById(Long chatId, RemoveLinkRequest removeLinkRequest) {
         return webClient
             .method(HttpMethod.DELETE)
             .uri(BASE_URL + "/links")
@@ -46,7 +51,7 @@ public class BotClient {
             .header("Accept","application/json")
             .header("Tg-Chat-Id", String.valueOf(chatId))
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(LinkResponse.class)
             .block();
     }
 
@@ -69,5 +74,4 @@ public class BotClient {
             .bodyToMono(String.class)
             .block();
     }
-
 }

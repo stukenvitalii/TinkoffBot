@@ -5,10 +5,14 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
+@Setter
+@Getter
 @Validated
-
 public class ApiErrorResponse {
     @JsonProperty("description")
     private String description = null;
@@ -26,17 +30,13 @@ public class ApiErrorResponse {
     @Valid
     private List<String> stacktrace = null;
 
+    public ApiErrorResponse(String description) {
+        this.description = description;
+    } //TODO все поля!
+
     public ApiErrorResponse description(String description) {
         this.description = description;
         return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public ApiErrorResponse code(String code) {
@@ -44,38 +44,14 @@ public class ApiErrorResponse {
         return this;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public ApiErrorResponse exceptionName(String exceptionName) {
         this.exceptionName = exceptionName;
         return this;
     }
 
-    public String getExceptionName() {
-        return exceptionName;
-    }
-
-    public void setExceptionName(String exceptionName) {
-        this.exceptionName = exceptionName;
-    }
-
     public ApiErrorResponse exceptionMessage(String exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
         return this;
-    }
-
-    public String getExceptionMessage() {
-        return exceptionMessage;
-    }
-
-    public void setExceptionMessage(String exceptionMessage) {
-        this.exceptionMessage = exceptionMessage;
     }
 
     public ApiErrorResponse stacktrace(List<String> stacktrace) {
@@ -89,14 +65,6 @@ public class ApiErrorResponse {
         }
         this.stacktrace.add(stacktraceItem);
         return this;
-    }
-
-    public List<String> getStacktrace() {
-        return stacktrace;
-    }
-
-    public void setStacktrace(List<String> stacktrace) {
-        this.stacktrace = stacktrace;
     }
 
     @Override
