@@ -92,11 +92,6 @@ public class LinksApiController implements LinksApi {
     ) {
         String accept = request.getHeader(acceptString);
 
-//        var link = body.getLink().toString();
-//        if (link.equals("https://github.com")) {
-//            throw new IllegalStateException("Duplicate link");
-//        }
-
         if (accept != null && accept.contains(applicationJsonString)) {
             try {
                 return new ResponseEntity<LinkResponse>(objectMapper.readValue(

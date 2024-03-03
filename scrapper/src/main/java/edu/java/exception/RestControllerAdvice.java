@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @org.springframework.web.bind.annotation.RestControllerAdvice
 public class RestControllerAdvice {
-
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handle(IllegalStateException ex) {
-
-        return new ApiErrorResponse(ex.getMessage(),
+        return new ApiErrorResponse(
+            ex.getMessage(),
             HttpStatus.BAD_REQUEST.toString(),
             ex.getClass().toGenericString(),
             ex.getMessage(),

@@ -109,16 +109,12 @@ public class MessageService {
         try {
             new ScrapperClient(WebClient.builder().build()).addLinkById(user.getId(),
                 new AddLinkRequest().link(uri.toURL())); //TODO extract ScrapperClient
-            user.getSites().add(uri);
+            trackSites.add(uri);
+            updateTrackSitesAndCommit(user, trackSites);
             return true;
         } catch (ApiException ex) {
             return false;
         }
-
-//        updateTrackSitesAndCommit(user, trackSites);
-//        System.out.println(new ScrapperClient(WebClient.builder().build()).addLinkById(user.getId(),
-//            new AddLinkRequest().link(uri.toURL())));
-//        return true;
     }
 
     private boolean deleteTrackingSites(User user, URI uri) {
