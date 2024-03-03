@@ -2,22 +2,21 @@ package edu.java.model.Request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.net.URL;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 import javax.annotation.Generated;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * AddLinkRequest
  */
 @Validated
 @Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-02-29T17:43:31.402605197Z[GMT]")
-
-
 public class AddLinkRequest   {
   @JsonProperty("link")
-  private String link = null;
+  private URL link = null;
 
-  public AddLinkRequest link(String link) {
+  public AddLinkRequest link(URL link) {
     this.link = link;
     return this;
   }
@@ -28,11 +27,11 @@ public class AddLinkRequest   {
    **/
   @Schema(description = "")
 
-    public String getLink() {
+    public URL getLink() {
     return link;
   }
 
-  public void setLink(String link) {
+  public void setLink(URL link) {
     this.link = link;
   }
 

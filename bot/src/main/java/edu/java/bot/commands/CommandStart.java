@@ -1,13 +1,12 @@
 package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.BotClient;
 import edu.java.bot.model.SessionState;
+import edu.java.bot.model.exception.ApiException;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.users.User;
 import java.util.List;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class CommandStart implements Command {
@@ -33,19 +32,24 @@ public class CommandStart implements Command {
     public String handle(Update update) {
         long chatId = update.message().chat().id();
 
-        return registerUser(chatId);
+        try {
+            return registerUser(chatId);
+        } catch (ApiException ex) {
+            return ex.getMessage();
+        }
     }
 
-    public String registerUser(long chatId) throws IllegalStateException{
+    public String registerUser(long chatId) throws ApiException {
         var userOptional = userService.findUserById(chatId);
 
         if (userOptional.isEmpty()) {
             User user = new User(chatId, List.of(), SessionState.BASE_STATE);
 
             userService.saveUser(user);
-            System.out.println(new BotClient(WebClient.builder().build()).addChatById(user.getId().toString()));
+//            System.out.println(new ScrapperClient(WebClient.builder().build()).addChatById(user.getId()));
+
             return SUCCESS_REGISTRATION_MESSAGE;
         }
-        throw new IllegalStateException(ALREADY_REGISTRATED_MESSAGE);
+        return ALREADY_REGISTRATED_MESSAGE;
     }
 }

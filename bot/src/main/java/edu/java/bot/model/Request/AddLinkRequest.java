@@ -2,6 +2,7 @@ package edu.java.bot.model.Request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.net.URL;
 import java.util.Objects;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
@@ -13,9 +14,9 @@ import org.springframework.validation.annotation.Validated;
 
 public class AddLinkRequest {
     @JsonProperty("link")
-    private String link = null;
+    private URL link = null;
 
-    public AddLinkRequest link(String link) {
+    public AddLinkRequest link(URL link) {
         this.link = link;
         return this;
     }
@@ -26,7 +27,7 @@ public class AddLinkRequest {
      * @return link
      **/
     @Schema(description = "")
-    public String getLink() {
+    public URL getLink() {
         return link;
     }
 

@@ -2,9 +2,9 @@ package edu.java.bot.model.Response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Objects;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
-import java.util.Objects;
 
 /**
  * LinkResponse
@@ -57,8 +57,8 @@ public class LinkResponse   {
       return false;
     }
     LinkResponse linkResponse = (LinkResponse) o;
-    return Objects.equals(this.id, linkResponse.id) &&
-        Objects.equals(this.url, linkResponse.url);
+    return Objects.equals(this.id, linkResponse.id)
+        && Objects.equals(this.url, linkResponse.url);
   }
 
   @Override

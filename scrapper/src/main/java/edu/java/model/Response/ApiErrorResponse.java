@@ -1,14 +1,19 @@
 package edu.java.model.Response;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.validation.Valid;
+import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
+@Setter
+@Getter
+@AllArgsConstructor
 @Validated
-
 public class ApiErrorResponse {
     @JsonProperty("description")
     private String description = null;
@@ -31,25 +36,9 @@ public class ApiErrorResponse {
         return this;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public ApiErrorResponse code(String code) {
         this.code = code;
         return this;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public ApiErrorResponse exceptionName(String exceptionName) {
@@ -57,25 +46,9 @@ public class ApiErrorResponse {
         return this;
     }
 
-    public String getExceptionName() {
-        return exceptionName;
-    }
-
-    public void setExceptionName(String exceptionName) {
-        this.exceptionName = exceptionName;
-    }
-
     public ApiErrorResponse exceptionMessage(String exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
         return this;
-    }
-
-    public String getExceptionMessage() {
-        return exceptionMessage;
-    }
-
-    public void setExceptionMessage(String exceptionMessage) {
-        this.exceptionMessage = exceptionMessage;
     }
 
     public ApiErrorResponse stacktrace(List<String> stacktrace) {
@@ -91,14 +64,6 @@ public class ApiErrorResponse {
         return this;
     }
 
-    public List<String> getStacktrace() {
-        return stacktrace;
-    }
-
-    public void setStacktrace(List<String> stacktrace) {
-        this.stacktrace = stacktrace;
-    }
-
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {
@@ -108,11 +73,11 @@ public class ApiErrorResponse {
             return false;
         }
         ApiErrorResponse apiErrorResponse = (ApiErrorResponse) o;
-        return Objects.equals(this.description, apiErrorResponse.description) &&
-            Objects.equals(this.code, apiErrorResponse.code) &&
-            Objects.equals(this.exceptionName, apiErrorResponse.exceptionName) &&
-            Objects.equals(this.exceptionMessage, apiErrorResponse.exceptionMessage) &&
-            Objects.equals(this.stacktrace, apiErrorResponse.stacktrace);
+        return Objects.equals(this.description, apiErrorResponse.description)
+            && Objects.equals(this.code, apiErrorResponse.code)
+            && Objects.equals(this.exceptionName, apiErrorResponse.exceptionName)
+            && Objects.equals(this.exceptionMessage, apiErrorResponse.exceptionMessage)
+            && Objects.equals(this.stacktrace, apiErrorResponse.stacktrace);
     }
 
     @Override

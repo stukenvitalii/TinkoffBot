@@ -32,7 +32,6 @@ public class CommandTrack implements Command {
         return sendTrackMessage(chatId);
     }
 
-    // track -> link ->
 
     private String sendTrackMessage(Long chatId) {
         var userOptional = userService.findUserById(chatId);

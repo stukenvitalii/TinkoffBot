@@ -1,10 +1,8 @@
 package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.BotClient;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.users.User;
-import org.springframework.web.reactive.function.client.WebClient;
 import java.net.URI;
 
 public class CommandList implements Command {
@@ -29,8 +27,8 @@ public class CommandList implements Command {
 
     @Override
     public String handle(Update update) {
-        BotClient botClient = new BotClient(WebClient.builder().build());
-        System.out.println(botClient.getLinksById(10L));
+//        ScrapperClient scrapperClient = new ScrapperClient(WebClient.builder().build());
+//        System.out.println(scrapperClient.getLinksById(10L));
         long chatId = update.message().chat().id();
         return getTrackingLinks(chatId);
     }

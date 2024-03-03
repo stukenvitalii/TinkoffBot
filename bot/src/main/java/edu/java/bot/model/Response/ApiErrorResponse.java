@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Setter
 @Getter
+@AllArgsConstructor
 @Validated
 public class ApiErrorResponse {
     @JsonProperty("description")
@@ -29,10 +30,6 @@ public class ApiErrorResponse {
     @JsonProperty("stacktrace")
     @Valid
     private List<String> stacktrace = null;
-
-    public ApiErrorResponse(String description) {
-        this.description = description;
-    } //TODO все поля!
 
     public ApiErrorResponse description(String description) {
         this.description = description;

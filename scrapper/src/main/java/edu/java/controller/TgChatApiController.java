@@ -1,7 +1,6 @@
 package edu.java.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.controller.TgChatApi;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,19 +10,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
-import javax.annotation.Generated;
+import org.springframework.web.bind.annotation.RestController;
 
-@Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-02-29T10:09:42.512141887Z[GMT]")
 @RestController
 public class TgChatApiController implements TgChatApi {
 
-    private static final Logger log = LoggerFactory.getLogger(TgChatApiController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TgChatApiController.class);
 
     private final ObjectMapper objectMapper;
 
     private final HttpServletRequest request;
+    private final String acceptString = "Accept";
 
     @Autowired
     public TgChatApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -38,7 +36,7 @@ public class TgChatApiController implements TgChatApi {
                    schema = @Schema())
         @PathVariable("id") Long id
     ) {
-        String accept = request.getHeader("Accept");
+        String accept = request.getHeader(acceptString);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
@@ -46,7 +44,11 @@ public class TgChatApiController implements TgChatApi {
         @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema()) @PathVariable("id")
         Long id
     ) {
-        String accept = request.getHeader("Accept");
+//        if (id == 123) {
+//            throw new IllegalStateException("Id is 123");
+//        }
+        // общение с бд
+        String accept = request.getHeader(acceptString);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

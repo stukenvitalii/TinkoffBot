@@ -1,14 +1,15 @@
 package edu.java.bot.service;
 
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.BotClient;
 import edu.java.bot.model.Request.AddLinkRequest;
-import edu.java.bot.model.Request.RemoveLinkRequest;
+import edu.java.bot.model.ScrapperClient;
 import edu.java.bot.model.SessionState;
+import edu.java.bot.model.exception.ApiException;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
 import edu.java.bot.users.User;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -70,10 +71,12 @@ public class MessageService {
             }
         } catch (URISyntaxException e) {
             return e.getReason();
+        } catch (MalformedURLException ex) {
+            return ex.getMessage();
         }
     }
 
-    private String processStateUserMessage(User user, URI uri) {
+    private String processStateUserMessage(User user, URI uri) throws MalformedURLException {
         if (user.getState().equals(SessionState.WAIT_URI_FOR_TRACKING)) {
             return prepareWaitTrackingMessage(user, uri);
         }
@@ -84,7 +87,7 @@ public class MessageService {
         return INVALID_COMMAND_MESSAGE;
     }
 
-    private String prepareWaitTrackingMessage(User user, URI uri) {
+    private String prepareWaitTrackingMessage(User user, URI uri) throws MalformedURLException {
         if (urlProcessor.isValidUrl(uri)) {
             return (updateUserTrackingSites(user, uri)) ? SUCCESS_TRACK_SITE_MESSAGE
                 : DUPLICATE_TRACKING_MESSAGE;
@@ -100,16 +103,22 @@ public class MessageService {
         return INVALID_FOR_TRACK_SITE_MESSAGE;
     }
 
-    private boolean updateUserTrackingSites(User user, URI uri) {
+    private boolean updateUserTrackingSites(User user, URI uri) throws MalformedURLException {
         List<URI> trackSites = new ArrayList<>(user.getSites());
-        if (trackSites.contains(uri)) {
+
+        try {
+            new ScrapperClient(WebClient.builder().build()).addLinkById(user.getId(),
+                new AddLinkRequest().link(uri.toURL())); //TODO extract ScrapperClient
+            user.getSites().add(uri);
+            return true;
+        } catch (ApiException ex) {
             return false;
         }
 
-        trackSites.add(uri);
-        updateTrackSitesAndCommit(user, trackSites);
-        System.out.println(new BotClient(WebClient.builder().build()).addLinkById(user.getId(),new AddLinkRequest().link(uri.toString())));
-        return true;
+//        updateTrackSitesAndCommit(user, trackSites);
+//        System.out.println(new ScrapperClient(WebClient.builder().build()).addLinkById(user.getId(),
+//            new AddLinkRequest().link(uri.toURL())));
+//        return true;
     }
 
     private boolean deleteTrackingSites(User user, URI uri) {
@@ -120,7 +129,8 @@ public class MessageService {
 
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
-        System.out.println(new BotClient(WebClient.builder().build()).deleteLinkById(user.getId(),new RemoveLinkRequest().link(uri.toString())));
+//        System.out.println(new ScrapperClient(WebClient.builder().build()).deleteLinkById(user.getId(),
+//            new RemoveLinkRequest().link(uri.toString())));
         return true;
     }
 

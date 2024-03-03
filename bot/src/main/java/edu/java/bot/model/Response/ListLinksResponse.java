@@ -2,11 +2,10 @@ package edu.java.bot.model.Response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
-import org.springframework.validation.annotation.Validated;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.validation.annotation.Validated;
 
 @Validated
 
@@ -62,8 +61,8 @@ public class ListLinksResponse {
             return false;
         }
         ListLinksResponse listLinksResponse = (ListLinksResponse) o;
-        return Objects.equals(this.links, listLinksResponse.links) &&
-            Objects.equals(this.size, listLinksResponse.size);
+        return Objects.equals(this.links, listLinksResponse.links)
+            && Objects.equals(this.size, listLinksResponse.size);
     }
 
     @Override

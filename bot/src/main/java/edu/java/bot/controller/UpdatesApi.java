@@ -3,6 +3,7 @@
  * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
+
 package edu.java.bot.controller;
 
 import edu.java.bot.model.Request.LinkUpdateRequest;
