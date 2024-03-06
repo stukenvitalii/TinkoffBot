@@ -8,6 +8,11 @@ spring:
   application:
     name: scrapper
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrapper
+    password: postgres
+    username: postgres
+
 server:
   port: 8080
 
