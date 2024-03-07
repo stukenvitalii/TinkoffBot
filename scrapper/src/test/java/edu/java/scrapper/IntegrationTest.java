@@ -1,5 +1,6 @@
 package edu.java.scrapper;
 
+import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -8,10 +9,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -24,10 +22,8 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Testcontainers
-@SpringBootTest
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
 
@@ -37,6 +33,8 @@ public abstract class IntegrationTest {
             .withUsername("postgres")
             .withPassword("postgres");
         POSTGRES.start();
+
+        System.out.println(POSTGRES.getMappedPort(5432));
 
         try {
             runMigrations(POSTGRES);
@@ -63,20 +61,42 @@ public abstract class IntegrationTest {
         liquibase.update(new Contexts(), new LabelExpression());
     }
 
+//    @DynamicPropertySource
+//    static void jdbcProperties(DynamicPropertyRegistry registry) {
+//        registry.add("spring.datasource.hikari.jdbc-url", POSTGRES::getJdbcUrl);
+//        registry.add("spring.datasource.hikari.username", POSTGRES::getUsername);
+//        registry.add("spring.datasource.hikari.password", POSTGRES::getPassword);
+//    }
+
     @DynamicPropertySource
-    static void jdbcProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRES::getUsername);
-        registry.add("spring.datasource.password", POSTGRES::getPassword);
+    protected static void setProperties(
+        DynamicPropertyRegistry registry
+    ) {
+        setDataSourceProperties(registry);
     }
 
-    @Autowired
-    private DataSource dataSource;
+    private static void setDataSourceProperties(DynamicPropertyRegistry registry) {
+        var mysqlDbHost = POSTGRES.getHost();
+        var mysqlDbPort = POSTGRES.getFirstMappedPort();
 
-    @Test
-    public void testLiquibaseMigration() {
-        // Verify that Liquibase migrations have been applied successfully
-        assertThat(dataSource).isNotNull();
-        // Add assertions as needed
+        System.out.println(mysqlDbHost + mysqlDbPort);
+        registry.add(
+            "spring.datasource.hikari.url",
+            () -> String.format("jdbc:postgresql://%s:%d/scrapper", mysqlDbHost, mysqlDbPort)
+        );
+        registry.add("spring.datasource.hikari.driver-class-name",org.postgresql.Driver.class);
+
     }
+
+//    @Bean
+//    public DataSource myDataSource() {
+//        HikariDataSource dataSource = new HikariDataSource();
+//        dataSource.setJdbcUrl("jdbc:postgresql://localhost:"+POSTGRES.getFirstMappedPort()+ ":5432/scrapper");
+//        dataSource.setUsername("postgres");
+//        dataSource.setPassword("postgres");
+//
+//        return dataSource;
+//    }
+
+
 }

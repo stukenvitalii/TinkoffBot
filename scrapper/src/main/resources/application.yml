@@ -9,9 +9,11 @@ spring:
     name: scrapper
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/scrapper
-    password: postgres
-    username: postgres
+    hikari:
+      username: postgres
+      password: postgres
+      jdbc-url: jdbc:postgresql://localhost:5432/scrapper
+      driver-class-name: org.postgresql.Driver
 
 server:
   port: 8080
