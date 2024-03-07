@@ -56,11 +56,10 @@ class CommandUntrackTest {
         when(userService.findUserById(chatId)).thenReturn(optionalMockUser);
 
         assertEquals(untrackMessage, commandUntrack.handle(update));
-
     }
 
     @Test
-    public void givenNotRegisteredUser_whenHandle_shouldReturnUntrackMessage() {
+    void givenNotRegisteredUser_whenHandle_shouldReturnUntrackMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
 
