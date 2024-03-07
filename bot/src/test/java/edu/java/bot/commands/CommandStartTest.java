@@ -43,7 +43,7 @@ class CommandStartTest {
     }
 
     @Test
-    void handleRegisteredUser() {
+    void givenRegisteredUser_whenHandle_shouldReturnAlreadyRegisteredMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
         Optional<User> optionalMockUser = mock(Optional.class);
@@ -51,12 +51,10 @@ class CommandStartTest {
         when(userService.findUserById(chatId)).thenReturn(optionalMockUser);
 
         assertEquals("Вы уже зарегистрированы в боте!", commandStart.handle(update));
-
-        //TODO дописать verify на кол-во вызовов
     }
 
     @Test
-    public void handleNotRegisteredUser() {
+    public void givenNotRegisteredUser_whenHandle_shouldReturnSuccessRegistrationMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
 

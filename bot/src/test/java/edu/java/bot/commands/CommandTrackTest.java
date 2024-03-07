@@ -46,7 +46,7 @@ class CommandTrackTest {
     }
 
     @Test
-    void handleRegisteredUser() {
+    void givenNotRegisteredUser_whenHandle_shouldReturnTrackMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
         Optional<User> optionalMockUser = mock(Optional.class);
@@ -56,12 +56,10 @@ class CommandTrackTest {
         when(userService.findUserById(chatId)).thenReturn(optionalMockUser);
 
         assertEquals(trackMessage, commandTrack.handle(update));
-
-        //TODO дописать verify на кол-во вызовов
     }
 
     @Test
-    public void handleNotRegisteredUser() {
+    public void givenNotRegisteredUser_whenHandle_shouldReturnUnknownUserMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
 
