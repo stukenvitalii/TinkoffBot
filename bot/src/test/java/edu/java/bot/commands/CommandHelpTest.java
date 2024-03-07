@@ -31,7 +31,7 @@ class CommandHelpTest {
     }
 
     @Test
-    public void testHandle_withEmptyList() {
+    public void givenEmptyList_whenHandle_shouldReturnEmptyListMessage() {
         when(mockCommandList.isEmpty()).thenReturn(true);
 
         String result = commandHelp.handle(null);
@@ -40,7 +40,7 @@ class CommandHelpTest {
     }
 
     @Test
-    public void testHandle_withMultipleCommands() {
+    public void givenMultipleCommands_whenHandle_shouldReturnCommandsDescriptionMessage() {
         Command mockCommand1 = mock(Command.class);
         when(mockCommand1.command()).thenReturn("/track");
         when(mockCommand1.description()).thenReturn("Позволяет добавить ссылку в список отслеживаемых.");
@@ -60,7 +60,10 @@ class CommandHelpTest {
 
         String result = commandHelp.handle(null);
 
-        String expectedResult = "/track - Позволяет добавить ссылку в список отслеживаемых.\n/untrack - Позволяет убрать ссылку из списка отслеживаемых.\n";
+        String expectedResult = """
+                /track - Позволяет добавить ссылку в список отслеживаемых.
+                /untrack - Позволяет убрать ссылку из списка отслеживаемых.
+                """;
         assertEquals(expectedResult, result);
     }
 }

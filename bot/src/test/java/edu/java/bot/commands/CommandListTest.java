@@ -38,19 +38,19 @@ class CommandListTest {
     }
 
     @Test
-    void getTrackingLinksNotRegistered() {
+    void givenNotRegisteredUser_whenGetTrackingLinks_shouldReturnUnknownUserMessage() {
         assertEquals(unknownUser, commandList.getTrackingLinks(-1L));
     }
 
     @Test
-    void getTrackingLinksEmptyList() {
+    void givenEmptyList_whenGetTrackingLinks_shouldReturnEmptyListMessage() {
         User mockUser = mock(User.class);
         userService.saveUser(mockUser);
         assertEquals(emptyList, commandList.getTrackingLinks(mockUser.getId()));
     }
 
     @Test
-    void getTrackingLinksNormal() throws URISyntaxException {
+    void givenNormalUser_whenGetTrackingLinks_shouldReturnNormalListMessage() throws URISyntaxException {
         User mockUser = mock(User.class);
 
         List<URI> sitesList = new ArrayList<>();
