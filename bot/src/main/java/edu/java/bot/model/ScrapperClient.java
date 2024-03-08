@@ -67,8 +67,6 @@ public class ScrapperClient {
             .uri(baseUrlTgChat, chatId)
             .header(accept, applicationJson)
             .retrieve()
-//            .onStatus(HttpStatus.BAD_REQUEST::equals,
-//                response -> Mono.error(new ApiException(response, "Smth wrong")))
             .bodyToMono(ApiErrorResponse.class)
             .onErrorResume(ApiException.class, ex -> ex.response.bodyToMono(ApiErrorResponse.class))
             .block();

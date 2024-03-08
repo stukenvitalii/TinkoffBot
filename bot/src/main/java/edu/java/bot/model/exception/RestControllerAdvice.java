@@ -12,7 +12,6 @@ public class RestControllerAdvice {
     @ExceptionHandler(ApiException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handle(ApiException ex) {
-
         return new ApiErrorResponse(ex.getMessage(),
             HttpStatus.BAD_REQUEST.toString(),
             ex.getClass().toGenericString(),
