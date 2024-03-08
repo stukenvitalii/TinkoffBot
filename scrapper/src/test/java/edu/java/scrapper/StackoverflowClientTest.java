@@ -28,8 +28,7 @@ public class StackoverflowClientTest {
 
     @Test
     @DisplayName("test for check the required response body")
-    public void testFetchQuestion() {
-        // Arrange
+    public void givenUrl_whenFetchQuestion_shouldReturnNormalQuestionEntity() {
         long questionId = 123456;
         String order = "activity";
         String sort = "desc";
@@ -49,13 +48,10 @@ public class StackoverflowClientTest {
                     "    ]\n}")
             ));
 
-        // Act
         WebClient webClient = WebClient.builder().baseUrl("http://localhost:" + wireMockServer.port()).build();
         StackOverFlowClient stackOverflowClient = new StackOverFlowClient(webClient);
 
-        // Assert
         StepVerifier.create(stackOverflowClient.fetchQuestion(questionId, sort, order))
-            // Then
             .expectNextMatches(response -> response.getItems().getFirst().getTitle().equals("title") &&
                 response.getItems().getFirst().getQuestionId() == 1 &&
                 response.getItems().getFirst().isAnswered()
