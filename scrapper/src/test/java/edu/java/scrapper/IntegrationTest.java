@@ -7,6 +7,7 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
 import org.springframework.context.annotation.Bean;
@@ -28,13 +29,11 @@ public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
 
     static {
-        POSTGRES = new PostgreSQLContainer<>("postgres:16")
+        POSTGRES = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("scrapper")
             .withUsername("postgres")
             .withPassword("postgres");
         POSTGRES.start();
-
-        System.out.println(POSTGRES.getMappedPort(5432));
 
         try {
             runMigrations(POSTGRES);
@@ -43,7 +42,7 @@ public abstract class IntegrationTest {
         }
     }
 
-    private static void runMigrations(JdbcDatabaseContainer<?> c)
+    protected static void runMigrations(JdbcDatabaseContainer<?> c)
         throws SQLException, LiquibaseException, FileNotFoundException {
         String url = c.getJdbcUrl();
         String username = c.getUsername();
@@ -52,51 +51,26 @@ public abstract class IntegrationTest {
         Path path = new File(".").toPath().toAbsolutePath()
             .getParent().getParent().resolve("migrations");
 
-        Connection connection = DriverManager.getConnection(url, username, password);
-
-        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+        Connection connection = getConnection(url, username, password);
+        Database database = getDatabase(connection);
 
         Liquibase liquibase = new liquibase.Liquibase("master.xml", new DirectoryResourceAccessor(path), database);
 
         liquibase.update(new Contexts(), new LabelExpression());
     }
 
-//    @DynamicPropertySource
-//    static void jdbcProperties(DynamicPropertyRegistry registry) {
-//        registry.add("spring.datasource.hikari.jdbc-url", POSTGRES::getJdbcUrl);
-//        registry.add("spring.datasource.hikari.username", POSTGRES::getUsername);
-//        registry.add("spring.datasource.hikari.password", POSTGRES::getPassword);
-//    }
+    public static Database getDatabase(Connection connection) throws DatabaseException {
+        return DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+    }
+
+    public static Connection getConnection(String url, String username, String password) throws SQLException {
+        return DriverManager.getConnection(url, username, password);
+    }
 
     @DynamicPropertySource
-    protected static void setProperties(
-        DynamicPropertyRegistry registry
-    ) {
-        setDataSourceProperties(registry);
+    static void jdbcProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES::getUsername);
+        registry.add("spring.datasource.password", POSTGRES::getPassword);
     }
-
-    private static void setDataSourceProperties(DynamicPropertyRegistry registry) {
-        var mysqlDbHost = POSTGRES.getHost();
-        var mysqlDbPort = POSTGRES.getFirstMappedPort();
-
-        System.out.println(mysqlDbHost + mysqlDbPort);
-        registry.add(
-            "spring.datasource.hikari.url",
-            () -> String.format("jdbc:postgresql://%s:%d/scrapper", mysqlDbHost, mysqlDbPort)
-        );
-        registry.add("spring.datasource.hikari.driver-class-name",org.postgresql.Driver.class);
-
-    }
-
-//    @Bean
-//    public DataSource myDataSource() {
-//        HikariDataSource dataSource = new HikariDataSource();
-//        dataSource.setJdbcUrl("jdbc:postgresql://localhost:"+POSTGRES.getFirstMappedPort()+ ":5432/scrapper");
-//        dataSource.setUsername("postgres");
-//        dataSource.setPassword("postgres");
-//
-//        return dataSource;
-//    }
-
-
 }
