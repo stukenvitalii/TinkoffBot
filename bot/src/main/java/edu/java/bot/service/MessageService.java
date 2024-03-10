@@ -1,10 +1,10 @@
 package edu.java.bot.service;
 
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.request.AddLinkRequest;
 import edu.java.bot.model.ScrapperClient;
 import edu.java.bot.model.SessionState;
 import edu.java.bot.model.exception.ApiException;
+import edu.java.bot.model.request.AddLinkRequest;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
