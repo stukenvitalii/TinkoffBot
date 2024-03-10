@@ -7,9 +7,22 @@ app:
 spring:
   application:
     name: scrapper
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  datasource:
+    hikari:
+      username: postgres
+      password: postgres
+      jdbc-url: jdbc:postgresql://localhost:5432/scrapper
+      driver-class-name: org.postgresql.Driver
 
 server:
   port: 8080
+
+springdoc:
+  swagger-ui:
+    path: swagger-ui
 
 logging:
   config: classpath:log4j2-plain.xml
