@@ -1,10 +1,10 @@
 package edu.java.bot.model;
 
-import edu.java.bot.model.Request.AddLinkRequest;
-import edu.java.bot.model.Request.RemoveLinkRequest;
-import edu.java.bot.model.Response.ApiErrorResponse;
-import edu.java.bot.model.Response.LinkResponse;
-import edu.java.bot.model.Response.ListLinksResponse;
+import edu.java.bot.model.request.AddLinkRequest;
+import edu.java.bot.model.request.RemoveLinkRequest;
+import edu.java.bot.model.response.ApiErrorResponse;
+import edu.java.bot.model.response.LinkResponse;
+import edu.java.bot.model.response.ListLinksResponse;
 import edu.java.bot.model.exception.ApiException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,8 @@
-package edu.java.bot.model.Request;
+package edu.java.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,23 +10,24 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
-@Setter @Getter @Validated
-
+@Setter
+@Getter
+@Validated
 public class LinkUpdateRequest {
     @JsonProperty("id")
-    private Long id = null;
+    private Long id;
 
     @JsonProperty("url")
-    private String url = null;
+    private URL url;
 
     @JsonProperty("description")
-    private String description = null;
+    private String description;
 
     @JsonProperty("tgChatIds")
     @Valid
-    private List<Long> tgChatIds = null;
+    private List<Long> tgChatIds;
 
-    public LinkUpdateRequest(Long id, String url, String description, List<Long> tgChatIds) {
+    public LinkUpdateRequest(Long id, URL url, String description, List<Long> tgChatIds) {
         this.id = id;
         this.url = url;
         this.description = description;
@@ -37,7 +39,7 @@ public class LinkUpdateRequest {
         return this;
     }
 
-    public LinkUpdateRequest url(String url) {
+    public LinkUpdateRequest url(URL url) {
         this.url = url;
         return this;
     }
@@ -61,7 +63,7 @@ public class LinkUpdateRequest {
     }
 
     @Override
-    public boolean equals(java.lang.Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -93,7 +95,7 @@ public class LinkUpdateRequest {
         return sb.toString();
     }
 
-    private String toIndentedString(java.lang.Object o) {
+    private String toIndentedString(Object o) {
         if (o == null) {
             return "null";
         }

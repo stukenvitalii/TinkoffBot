@@ -1,6 +1,6 @@
 package edu.java.model;
 
-import edu.java.model.Request.LinkUpdateRequest;
+import edu.java.model.request.LinkUpdateRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
