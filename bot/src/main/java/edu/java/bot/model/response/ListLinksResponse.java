@@ -1,4 +1,4 @@
-package edu.java.model.Response;
+package edu.java.bot.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
@@ -53,7 +53,7 @@ public class ListLinksResponse {
     }
 
     @Override
-    public boolean equals(java.lang.Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -81,7 +81,7 @@ public class ListLinksResponse {
         return sb.toString();
     }
 
-    private String toIndentedString(java.lang.Object o) {
+    private String toIndentedString(Object o) {
         if (o == null) {
             return "null";
         }

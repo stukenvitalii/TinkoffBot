@@ -1,4 +1,4 @@
-package edu.java.model.Response;
+package edu.java.bot.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;

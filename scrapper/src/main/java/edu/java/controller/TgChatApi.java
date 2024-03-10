@@ -1,6 +1,6 @@
 package edu.java.controller;
 
-import edu.java.model.Response.ApiErrorResponse;
+import edu.java.model.response.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
