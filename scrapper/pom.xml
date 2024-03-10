@@ -138,12 +138,6 @@
             <version>2.9.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Database -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
