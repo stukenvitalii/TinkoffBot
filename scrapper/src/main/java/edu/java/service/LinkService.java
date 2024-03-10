@@ -6,7 +6,9 @@ import java.util.List;
 public interface LinkService {
     List<Link> getLinks();
 
-    void addLink(Link link);
+    int addLink(Link link);
 
-    void removeLink(Long id);
+    int removeLink(Long id);
+
+//    List<Link> getUnUpdatedLinks();
 }

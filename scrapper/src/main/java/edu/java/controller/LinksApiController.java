@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import javax.annotation.Generated;
@@ -100,7 +101,7 @@ public class LinksApiController implements LinksApi {
     ) {
         Link link = new Link();
         link.setChatId(3);
-        link.setUrl("https://github.com");
+        link.setUrl(URI.create("https://github.com"));
         link.setCreatedAt(new Timestamp(234234));
         link.setLastCheckTime(new Timestamp(234234));
 

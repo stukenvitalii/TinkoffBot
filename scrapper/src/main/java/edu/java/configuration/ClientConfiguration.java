@@ -1,27 +1,27 @@
 package edu.java.configuration;
 
+import edu.java.github.GitHubClient;
+import edu.java.stackoverflow.StackOverFlowClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class ClientConfiguration {
-    private static final String GITHUB_COM = "https://api.github.com";
-    private static final String STACKOVERFLOW = "https://api.stackexchange.com/2.3";
+
+    @Value("${app.gitUrl}")
+    private String gitUrl;
 
     @Bean
-    public WebClient gitHubClient() {
-        return WebClient
-            .builder()
-            .baseUrl(GITHUB_COM)
-            .build();
+    public GitHubClient gitHubClient() {
+        return new GitHubClient(gitUrl);
     }
 
+    @Value("${app.stackUrl}")
+    private String stackUrl;
+
     @Bean
-    public WebClient stackOverFlowClient() {
-        return WebClient
-            .builder()
-            .baseUrl(STACKOVERFLOW)
-            .build();
+    public StackOverFlowClient stackOverFlowClient() {
+        return new StackOverFlowClient(stackUrl);
     }
 }

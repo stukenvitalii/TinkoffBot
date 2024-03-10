@@ -18,25 +18,19 @@ import java.util.List;
 public class ChatRepository {
     private final JdbcClient jdbcClient;
 
-
-
     @Transactional
     public void add(Chat chatEntity) {
         String sql =
-            "insert into chat(id, chat_id) values(:id,:chatId)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+            "insert into chat(chat_id) values(:chatId)";
         jdbcClient.sql(sql)
-            .param("id", chatEntity.getId())
             .param("chatId", chatEntity.getChatId())
-            .update(keyHolder);
-        BigInteger id = keyHolder.getKeyAs(BigInteger.class);
-        chatEntity.setId(id.longValue());
+            .update();
     }
 
     @Transactional
-    public void remove(Long id) {
-        String sql = "delete from chat where id = ?";
-        int count = jdbcClient.sql(sql).param(1, id).update();
+    public void remove(Long chat_id) {
+        String sql = "delete from chat where chat_id = ?";
+        int count = jdbcClient.sql(sql).param(1, chat_id).update();
         if (count == 0) {
             throw new RuntimeException("chat not found");
         }

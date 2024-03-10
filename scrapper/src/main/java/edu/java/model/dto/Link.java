@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.net.URI;
 import java.sql.Timestamp;
 
 @Getter
@@ -12,7 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Link {
     private long id;
-    private String url;
+    private URI url;
     private long chatId;
     private Timestamp lastCheckTime;
     private Timestamp createdAt;
