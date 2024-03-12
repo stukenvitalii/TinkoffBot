@@ -136,4 +136,7 @@ public class MessageService {
         userRepository.saveUser(user);
     }
 
+    private String sendNotification() {
+        return "update";
+    }
 }
