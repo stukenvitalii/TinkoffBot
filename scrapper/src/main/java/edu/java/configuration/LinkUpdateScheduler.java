@@ -1,9 +1,13 @@
 package edu.java.configuration;
 
+import edu.java.client.BotClient;
 import edu.java.github.GitHubClient;
+import edu.java.github.GitHubRepository;
 import edu.java.model.dto.Link;
 import edu.java.service.jdbc.JdbcLinkService;
 import edu.java.stackoverflow.StackOverFlowClient;
+import edu.java.stackoverflow.StackOverFlowQuestion;
+import edu.java.stackoverflow.StackOverFlowResponse;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,22 +41,38 @@ public class LinkUpdateScheduler {
     public void update() {
         logger.info("I'm updating!");
 
-        getLinkListUnUpdated(); //TODO rename
+        updateOldLinks();
     }
 
-    private void getLinkListUnUpdated() { //TODO rename
+    private void updateOldLinks() {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
         for (Link link: jdbcLinkService.getLinks()) {
             if ( now.getTime()/1000 - link.getLastCheckTime().getTime()/1000  > 30 ) {
+
+                System.out.println(link.getLastCheckTime());
+
                 if (link.getUrl().getHost().equals("github.com")) {
                     List<String> fragments = List.of(link.getUrl().toString().split("/"));
-                    gitHubClient.getRepositoryInfo(fragments.get(3), fragments.get(4));
+                    GitHubRepository rep = gitHubClient.getRepositoryInfo(fragments.get(3), fragments.get(4)).block();
+                    Timestamp lastPush = rep.getLastPush();
+
+                    if (lastPush.after(link.getLastCheckTime())) {
+                        link.setLastCheckTime(Timestamp.valueOf(LocalDateTime.now())); //TODO update to DB
+                        System.out.println("rep" + lastPush + rep.getName());
+                    }
                 }
-                else if (link.getUrl().getHost().equals("api.stackexchange.com")) {
+                else if (link.getUrl().getHost().equals("stackoverflow.com")) {
                     List<String> fragments = List.of(link.getUrl().toString().split("/"));
-                    stackOverFlowClient.fetchQuestion(Long.parseLong(fragments.get(4)));
+                    StackOverFlowQuestion question = stackOverFlowClient.fetchQuestion(Long.parseLong(fragments.get(4))).block().getItems().getFirst();
+                    Timestamp lastActivity = question.getLastActivityAsTimestamp();
+
+                    if (lastActivity.after(link.getLastCheckTime())) {
+                        link.setLastCheckTime(Timestamp.valueOf(LocalDateTime.now())); //TODO update to DB
+                        System.out.println("sof " + lastActivity + question.getTitle());
+                    }
                 }
+
             }
         }
     }
