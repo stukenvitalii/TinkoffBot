@@ -11,7 +11,7 @@ public class GitHubClient {
 
     public GitHubClient(String baseurl) {
         webClient = webClientBuilder.baseUrl(baseurl)
-            .defaultHeaders(h -> h.setBearerAuth(System.getenv("GITHUB_API_TOKEN_SECOND")))
+            .defaultHeaders(h -> h.setBearerAuth(System.getenv("GITHUB_API_TOKEN")))
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE).build();
     }
 
