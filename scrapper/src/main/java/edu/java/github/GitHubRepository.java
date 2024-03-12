@@ -3,6 +3,7 @@ package edu.java.github;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -15,4 +16,7 @@ public class GitHubRepository {
 
     @JsonProperty("defaultBranch")
     private String defaultBranch;
+
+    @JsonProperty("pushed_at")
+    private Timestamp lastPush;
 }
