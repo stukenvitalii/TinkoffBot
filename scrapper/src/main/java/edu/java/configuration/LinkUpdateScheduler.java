@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,6 @@ public class LinkUpdateScheduler {
 
     public LinkUpdateScheduler(JdbcLinkService jdbcLinkService) {
         this.jdbcLinkService = jdbcLinkService;
-
     }
     @Autowired
     private GitHubClient gitHubClient;
@@ -37,8 +37,11 @@ public class LinkUpdateScheduler {
     @Autowired
     private StackOverFlowClient stackOverFlowClient;
 
+    private final BotClient botClient = new BotClient(WebClient.builder().build());
+
     @Scheduled(fixedDelayString = "#{scheduler.interval}")
-    public void update() {
+    public void update() throws InterruptedException {
+        Thread.sleep(10000); //TODO remove
         logger.info("I'm updating!");
 
         updateOldLinks();
@@ -50,8 +53,6 @@ public class LinkUpdateScheduler {
         for (Link link: jdbcLinkService.getLinks()) {
             if ( now.getTime()/1000 - link.getLastCheckTime().getTime()/1000  > 30 ) {
 
-                System.out.println(link.getLastCheckTime());
-
                 if (link.getUrl().getHost().equals("github.com")) {
                     List<String> fragments = List.of(link.getUrl().toString().split("/"));
                     GitHubRepository rep = gitHubClient.getRepositoryInfo(fragments.get(3), fragments.get(4)).block();
@@ -59,6 +60,9 @@ public class LinkUpdateScheduler {
 
                     if (lastPush.after(link.getLastCheckTime())) {
                         link.setLastCheckTime(Timestamp.valueOf(LocalDateTime.now())); //TODO update to DB
+
+                        botClient.updateLink(link.getUrl(), List.of(link.getChatId()));
+
                         System.out.println("rep" + lastPush + rep.getName());
                     }
                 }

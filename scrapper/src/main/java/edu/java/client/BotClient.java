@@ -2,8 +2,10 @@ package edu.java.client;
 
 import edu.java.model.request.LinkUpdateRequest;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -16,8 +18,8 @@ public class BotClient {
         this.webClient = webClient;
     }
 
-    public String updateLink(String url, List<Long> tgChatIds) throws MalformedURLException {
-        LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, new URL(url), "Обновление ссылки", tgChatIds);
+    public String updateLink(URI url, List<Long> tgChatIds) {
+        LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, url, "Обновление ссылки", tgChatIds);
 
         return webClient
             .post()
