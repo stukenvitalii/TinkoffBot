@@ -1,6 +1,8 @@
 package edu.java.bot.service;
 
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.request.AddLinkRequest;
 import edu.java.bot.model.ScrapperClient;
 import edu.java.bot.model.SessionState;
@@ -55,6 +57,12 @@ public class MessageService {
         }
 
         var user = userOptional.get();
+        System.out.println(user.getState() + " my state!!!!!!!!!!!!");
+        if (user.getState().equals(SessionState.WAITING_FOR_NOTIFICATION)) {
+            System.out.println("im here" + text);
+
+            return text;
+        }
         try {
             if (!user.getState().equals(SessionState.BASE_STATE)) {
                 URI uri = new URI(text);
@@ -66,7 +74,8 @@ public class MessageService {
                     return processStateUserMessage(user, uri);
                 }
                 throw new URISyntaxException(text, INVALID_FOR_TRACK_SITE_MESSAGE);
-            } else {
+            }
+            else {
                 throw new URISyntaxException(text, INVALID_COMMAND_MESSAGE);
             }
         } catch (URISyntaxException e) {
@@ -107,12 +116,10 @@ public class MessageService {
         List<URI> trackSites = new ArrayList<>(user.getSites());
 
         try {
-            new ScrapperClient(WebClient.builder().build()).addLinkById(user.getId(),
-                new AddLinkRequest().link(uri.toURL())); //TODO extract ScrapperClient
             trackSites.add(uri);
             updateTrackSitesAndCommit(user, trackSites);
             return true;
-        } catch (ApiException ex) {
+        } catch (Exception ex) {
             return false;
         }
     }
@@ -125,8 +132,7 @@ public class MessageService {
 
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
-//        System.out.println(new ScrapperClient(WebClient.builder().build()).deleteLinkById(user.getId(),
-//            new RemoveLinkRequest().link(uri.toString())));
+
         return true;
     }
 
@@ -136,7 +142,19 @@ public class MessageService {
         userRepository.saveUser(user);
     }
 
-    private String sendNotification() {
-        return "update";
+    public void sendNotification(List<Long> tgIds, URI url, String description) {
+        for (Long id: tgIds) {
+            try {
+                User user = userRepository.findUserById(id).get();
+                user.setState(SessionState.WAITING_FOR_NOTIFICATION);
+                userRepository.saveUser(user);
+                processNonCommandMessage(id, "New update from link " + url.toString() + " message: " + description);
+            }
+            catch (Exception ex) {
+                System.out.println("not registered");
+                return;
+            }
+
+        }
     }
 }

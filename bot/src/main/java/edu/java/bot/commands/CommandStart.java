@@ -31,6 +31,7 @@ public class CommandStart implements Command {
     @Override
     public String handle(Update update) {
         long chatId = update.message().chat().id();
+        System.out.println(chatId);
 
         try {
             return registerUser(chatId);

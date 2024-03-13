@@ -2,6 +2,7 @@ package edu.java.bot.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,7 @@ public class LinkUpdateRequest {
     private Long id = null;
 
     @JsonProperty("url")
-    private String url = null;
+    private URI url = null;
 
     @JsonProperty("description")
     private String description = null;
@@ -25,7 +26,7 @@ public class LinkUpdateRequest {
     @Valid
     private List<Long> tgChatIds = null;
 
-    public LinkUpdateRequest(Long id, String url, String description, List<Long> tgChatIds) {
+    public LinkUpdateRequest(Long id, URI url, String description, List<Long> tgChatIds) {
         this.id = id;
         this.url = url;
         this.description = description;
@@ -37,7 +38,7 @@ public class LinkUpdateRequest {
         return this;
     }
 
-    public LinkUpdateRequest url(String url) {
+    public LinkUpdateRequest url(URI url) {
         this.url = url;
         return this;
     }
