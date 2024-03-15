@@ -5,6 +5,7 @@ import edu.java.repository.LinkRepository;
 import edu.java.service.LinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -20,17 +21,22 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public int addLink(Link link) {
-        return linkRepository.add(link);
+    public void addLink(Link link) {
+        linkRepository.add(link);
     }
 
     @Override
-    public int removeLink(Long id) {
-        return linkRepository.remove(id);
+    public void removeLink(Long id) {
+        linkRepository.remove(id);
     }
 
-//    @Override
-//    public List<Link> getUnUpdatedLinks() {
-//        return linkRepository.findUnUpdatedLinks();
-//    }
+    @Override
+    public void updateLinkLastCheckTime(Long id, Timestamp lastCheckTime) {
+        linkRepository.updateLinkLastCheckTimeById(id, lastCheckTime);
+    }
+
+    @Override
+    public List<Link> getUnUpdatedLinks() {
+        return linkRepository.getUnUpdatedLinks();
+    }
 }

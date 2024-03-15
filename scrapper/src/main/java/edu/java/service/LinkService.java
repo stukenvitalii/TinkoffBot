@@ -1,14 +1,17 @@
 package edu.java.service;
 
 import edu.java.model.dto.Link;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface LinkService {
     List<Link> getLinks();
 
-    int addLink(Link link);
+    void addLink(Link link);
 
-    int removeLink(Long id);
+    void removeLink(Long id);
 
-//    List<Link> getUnUpdatedLinks();
+    void updateLinkLastCheckTime(Long id, Timestamp lastCheckTime);
+
+    List<Link> getUnUpdatedLinks();
 }
