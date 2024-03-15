@@ -27,6 +27,9 @@ public class StackOverFlowQuestion {
     @JsonProperty("last_activity_date")
     private Long last_activity;
 
+    @JsonProperty("answer_count")
+    private int answerCount;
+
     public Timestamp getLastActivityAsTimestamp() {
         return Timestamp.valueOf(Instant.ofEpochMilli(last_activity*1000).atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
