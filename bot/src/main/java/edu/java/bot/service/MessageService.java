@@ -1,12 +1,9 @@
 package edu.java.bot.service;
 
-import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.model.request.AddLinkRequest;
-import edu.java.bot.model.ScrapperClient;
 import edu.java.bot.model.SessionState;
-import edu.java.bot.model.exception.ApiException;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
@@ -17,7 +14,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class MessageService {
@@ -31,15 +27,17 @@ public class MessageService {
     private final CommandHandler commandHandler;
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
+    private final TelegramBot telegramBot;
 
     public MessageService(
-        CommandHandler commandHandler,
-        UserService userRepository,
-        UrlProcessor urlProcessor
+            CommandHandler commandHandler,
+            UserService userRepository,
+            UrlProcessor urlProcessor, TelegramBot telegramBot
     ) {
         this.commandHandler = commandHandler;
         this.userRepository = userRepository;
         this.urlProcessor = urlProcessor;
+        this.telegramBot = telegramBot;
     }
 
     public String prepareResponseMessage(Update update) {
@@ -57,12 +55,12 @@ public class MessageService {
         }
 
         var user = userOptional.get();
-        System.out.println(user.getState() + " my state!!!!!!!!!!!!");
-        if (user.getState().equals(SessionState.WAITING_FOR_NOTIFICATION)) {
-            System.out.println("im here" + text);
-
-            return text;
-        }
+//        System.out.println(user.getState() + " my state!!!!!!!!!!!!");
+//        if (user.getState().equals(SessionState.WAITING_FOR_NOTIFICATION)) {
+//            System.out.println("im here" + text);
+//
+//            return text;
+//        }
         try {
             if (!user.getState().equals(SessionState.BASE_STATE)) {
                 URI uri = new URI(text);
@@ -96,7 +94,7 @@ public class MessageService {
         return INVALID_COMMAND_MESSAGE;
     }
 
-    private String prepareWaitTrackingMessage(User user, URI uri) throws MalformedURLException {
+    private String prepareWaitTrackingMessage(User user, URI uri) {
         if (urlProcessor.isValidUrl(uri)) {
             return (updateUserTrackingSites(user, uri)) ? SUCCESS_TRACK_SITE_MESSAGE
                 : DUPLICATE_TRACKING_MESSAGE;
@@ -112,7 +110,7 @@ public class MessageService {
         return INVALID_FOR_TRACK_SITE_MESSAGE;
     }
 
-    private boolean updateUserTrackingSites(User user, URI uri) throws MalformedURLException {
+    private boolean updateUserTrackingSites(User user, URI uri) {
         List<URI> trackSites = new ArrayList<>(user.getSites());
 
         try {
@@ -148,13 +146,14 @@ public class MessageService {
                 User user = userRepository.findUserById(id).get();
                 user.setState(SessionState.WAITING_FOR_NOTIFICATION);
                 userRepository.saveUser(user);
-                processNonCommandMessage(id, "New update from link " + url.toString() + " message: " + description);
+                telegramBot.execute(new SendMessage(
+                    id,
+                    "New update from link " + url.toString() + " message: " + description));
             }
             catch (Exception ex) {
                 System.out.println("not registered");
                 return;
             }
-
         }
     }
 }

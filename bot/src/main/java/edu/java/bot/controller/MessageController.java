@@ -35,29 +35,32 @@ public class MessageController implements UpdatesListener {
                             update.message().chat().id(),
                             messageService.prepareResponseMessage(update)
                         );
-
-                        telegramBot.execute(
-                            message,
-                            new Callback<SendMessage, SendResponse>() {
-                                @Override
-                                public void onResponse(SendMessage request, SendResponse response) {
-                                    MESSAGE_LOGGER.info("Отправка ответа %s на запрос  %s".formatted(
-                                        request.toString(),
-                                        response.message().text()
-                                    ));
-                                }
-
-                                @Override
-                                public void onFailure(SendMessage request, IOException e) {
-                                    MESSAGE_LOGGER.error("Ошибка выполнения запроса: " + e.getMessage());
-
-                                }
-                            }
-                        );
+                        execute(message);
                     }
                 }
             );
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
+    }
+
+    private void execute(SendMessage message) {
+        telegramBot.execute(
+            message,
+            new Callback<SendMessage, SendResponse>() {
+                @Override
+                public void onResponse(SendMessage request, SendResponse response) {
+                    MESSAGE_LOGGER.info("Отправка ответа %s на запрос  %s".formatted(
+                        request.toString(),
+                        response.message().text()
+                    ));
+                }
+
+                @Override
+                public void onFailure(SendMessage request, IOException e) {
+                    MESSAGE_LOGGER.error("Ошибка выполнения запроса: " + e.getMessage());
+
+                }
+            }
+        );
     }
 }
