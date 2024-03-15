@@ -26,11 +26,10 @@ public class LinkUpdateScheduler {
     private final Logger logger = Logger.getLogger(LinkUpdateScheduler.class.getName());
     private final JdbcLinkService jdbcLinkService;
 
-
-
     public LinkUpdateScheduler(JdbcLinkService jdbcLinkService) {
         this.jdbcLinkService = jdbcLinkService;
     }
+
     @Autowired
     private GitHubClient gitHubClient;
 
@@ -40,46 +39,42 @@ public class LinkUpdateScheduler {
     private final BotClient botClient = new BotClient(WebClient.builder().build());
 
     @Scheduled(fixedDelayString = "#{scheduler.interval}")
-    public void update() throws InterruptedException {
-        Thread.sleep(10000); //TODO remove
+    public void update() {
         logger.info("I'm updating!");
-
         updateOldLinks();
     }
 
     private void updateOldLinks() {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
-        for (Link link: jdbcLinkService.getLinks()) {
-            if ( now.getTime()/1000 - link.getLastCheckTime().getTime()/1000  > 30 ) {
-
-                if (link.getUrl().getHost().equals("github.com")) {
-                    List<String> fragments = List.of(link.getUrl().toString().split("/"));
-                    GitHubRepository rep = gitHubClient.getRepositoryInfo(fragments.get(3), fragments.get(4)).block();
-                    Timestamp lastPush = rep.getLastPush();
-
-                    if (lastPush.after(link.getLastCheckTime())) {
-                        link.setLastCheckTime(Timestamp.valueOf(LocalDateTime.now())); //TODO update to DB
-
-                        botClient.updateLink(link.getUrl(), List.of(link.getChatId()));
-
-                        System.out.println("rep" + lastPush + rep.getName());
-                    }
-                }
-                else if (link.getUrl().getHost().equals("stackoverflow.com")) {
-                    List<String> fragments = List.of(link.getUrl().toString().split("/"));
-                    StackOverFlowQuestion question = stackOverFlowClient.fetchQuestion(Long.parseLong(fragments.get(4))).block().getItems().getFirst();
-                    Timestamp lastActivity = question.getLastActivityAsTimestamp();
-
-                    if (lastActivity.after(link.getLastCheckTime())) {
-                        link.setLastCheckTime(Timestamp.valueOf(LocalDateTime.now())); //TODO update to DB
-                        System.out.println("sof " + lastActivity + question.getTitle());
-                    }
-                }
-
+        for (Link link : jdbcLinkService.getUnUpdatedLinks()) {
+            if (link.getUrl().getHost().equals("github.com")) {
+                updateGithubLink(link, now);
+            } else if (link.getUrl().getHost().equals("stackoverflow.com")) {
+                updateStackOverFlowLink(link, now);
             }
         }
     }
 
+    private void updateStackOverFlowLink(Link link, Timestamp now) {
+        List<String> fragments = List.of(link.getUrl().toString().split("/"));
+        StackOverFlowQuestion question = stackOverFlowClient.fetchQuestion(Long.parseLong(fragments.get(4))).block().getItems().getFirst();
+        Timestamp lastActivity = question.getLastActivityAsTimestamp();
 
+        if (lastActivity.after(link.getLastCheckTime())) {
+            botClient.updateLink(link.getUrl(), List.of(link.getChatId()));
+            jdbcLinkService.updateLinkLastCheckTime(link.getId(), now);
+        }
+    }
+
+    private void updateGithubLink(Link link, Timestamp now) {
+        List<String> fragments = List.of(link.getUrl().toString().split("/"));
+        GitHubRepository rep = gitHubClient.getRepositoryInfo(fragments.get(3), fragments.get(4)).block();
+        Timestamp lastPush = rep.getLastPush();
+
+        if (lastPush.after(link.getLastCheckTime())) {
+            botClient.updateLink(link.getUrl(), List.of(link.getChatId()));
+            jdbcLinkService.updateLinkLastCheckTime(link.getId(), now);
+        }
+    }
 }
