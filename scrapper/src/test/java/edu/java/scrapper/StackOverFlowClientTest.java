@@ -44,7 +44,7 @@ public class StackOverFlowClientTest {
             ));
 
         // Act
-        String baseUrl ="http://localhost/:" + wireMockServer.port();
+        String baseUrl ="http://localhost:" + wireMockServer.port();
         StackOverFlowClient stackOverflowClient = new StackOverFlowClient(baseUrl);
 
         // Assert
@@ -57,5 +57,4 @@ public class StackOverFlowClientTest {
             .expectComplete()
             .verify();
     }
-
 }

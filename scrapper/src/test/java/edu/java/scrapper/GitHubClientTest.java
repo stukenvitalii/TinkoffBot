@@ -14,7 +14,7 @@ public class GitHubClientTest {
 
     @BeforeAll
     public static void setUp() {
-        wireMockServer = new WireMockServer(8000);
+        wireMockServer = new WireMockServer(8080);
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
     }
@@ -38,7 +38,7 @@ public class GitHubClientTest {
                 .withBody("{\"id\":756021540,\"name\":\"testRepo\",\"defaultBranch\":\"master\"}")
             ));
 
-        String baseUrl = "http://localhost/:" + wireMockServer.port();
+        String baseUrl = "http://localhost:" + wireMockServer.port();
         GitHubClient gitHubClient = new GitHubClient(baseUrl);
 
         StepVerifier.create(gitHubClient.getRepositoryInfo(name, reposName))
