@@ -46,7 +46,7 @@ class CommandUntrackTest {
     }
 
     @Test
-    void handleRegisteredUser() {
+    void givenRegisteredUser_whenHandle_shouldReturnUntrackMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
         Optional<User> optionalMockUser = mock(Optional.class);
@@ -59,7 +59,7 @@ class CommandUntrackTest {
     }
 
     @Test
-    public void handleNotRegisteredUser() {
+    void givenNotRegisteredUser_whenHandle_shouldReturnUntrackMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
 
