@@ -19,20 +19,11 @@ public class StackOverFlowClient {
 
     public Mono<StackOverFlowResponse> fetchQuestion(long questionId) {
         String apiUrl = String.format(URL, questionId);
-        String commentsUrl = String.format(commentsURL, questionId);
-
-        Long comments = webClient
-            .get()
-            .uri(commentsUrl)
-            .retrieve()
-            .bodyToMono(Long.class).block();
 
         return webClient
             .get()
             .uri(apiUrl)
             .retrieve()
             .bodyToMono(StackOverFlowResponse.class);
-
-
     }
 }
