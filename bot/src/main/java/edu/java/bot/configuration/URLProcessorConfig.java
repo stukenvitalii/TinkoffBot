@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class URLProcessorConfig {
-
     @Bean
     UrlProcessor urlProcessor() {
         return new StackOverflowUrlProcessor(

@@ -1,4 +1,4 @@
-package edu.java.bot.controllers;
+package edu.java.bot.controller;
 
 import com.pengrad.telegrambot.Callback;
 import com.pengrad.telegrambot.TelegramBot;
