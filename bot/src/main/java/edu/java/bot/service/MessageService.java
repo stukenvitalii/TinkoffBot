@@ -1,15 +1,19 @@
 package edu.java.bot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.SessionState;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
 import edu.java.bot.users.User;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,15 +28,18 @@ public class MessageService {
     private final CommandHandler commandHandler;
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
+    private final TelegramBot telegramBot;
+    private Logger logger;
 
     public MessageService(
         CommandHandler commandHandler,
         UserService userRepository,
-        UrlProcessor urlProcessor
+        UrlProcessor urlProcessor, TelegramBot telegramBot
     ) {
         this.commandHandler = commandHandler;
         this.userRepository = userRepository;
         this.urlProcessor = urlProcessor;
+        this.telegramBot = telegramBot;
     }
 
     public String prepareResponseMessage(Update update) {
@@ -66,10 +73,12 @@ public class MessageService {
             }
         } catch (URISyntaxException e) {
             return e.getReason();
+        } catch (MalformedURLException ex) {
+            return ex.getMessage();
         }
     }
 
-    private String processStateUserMessage(User user, URI uri) {
+    private String processStateUserMessage(User user, URI uri) throws MalformedURLException {
         if (user.getState().equals(SessionState.WAIT_URI_FOR_TRACKING)) {
             return prepareWaitTrackingMessage(user, uri);
         }
@@ -98,13 +107,14 @@ public class MessageService {
 
     private boolean updateUserTrackingSites(User user, URI uri) {
         List<URI> trackSites = new ArrayList<>(user.getSites());
-        if (trackSites.contains(uri)) {
+
+        try {
+            trackSites.add(uri);
+            updateTrackSitesAndCommit(user, trackSites);
+            return true;
+        } catch (Exception ex) {
             return false;
         }
-
-        trackSites.add(uri);
-        updateTrackSitesAndCommit(user, trackSites);
-        return true;
     }
 
     private boolean deleteTrackingSites(User user, URI uri) {
@@ -115,6 +125,7 @@ public class MessageService {
 
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
+
         return true;
     }
 
@@ -124,4 +135,20 @@ public class MessageService {
         userRepository.saveUser(user);
     }
 
+    public void sendNotification(List<Long> tgIds, URI url, String description) {
+        for (Long id : tgIds) {
+            try {
+                User user = userRepository.findUserById(id).get();
+                user.setState(SessionState.WAITING_FOR_NOTIFICATION);
+                userRepository.saveUser(user);
+                telegramBot.execute(new SendMessage(
+                    id,
+                    "New update from link " + url.toString() + " message: " + description
+                ));
+            } catch (Exception ex) {
+                logger.warning("User is not registered");
+                return;
+            }
+        }
+    }
 }
