@@ -1,9 +1,9 @@
 package edu.java.repository;
 
 import edu.java.model.dto.Link;
+import edu.java.model.dto.LinkSof;
 import java.sql.Timestamp;
 import java.util.List;
-import edu.java.model.dto.LinkSof;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LinkRepository {
     private final JdbcClient jdbcClient;
+    private final String lastCheckTimeString = "lastCheckTime";
 
     @Transactional
     public int add(Link entity) {
@@ -24,7 +25,7 @@ public class LinkRepository {
             jdbcClient.sql(sql)
                 .param("url", entity.getUrl().toString())
                 .param("chatId", entity.getChatId())
-                .param("lastCheckTime", entity.getLastCheckTime())
+                .param(lastCheckTimeString, entity.getLastCheckTime())
                 .param("createdAt", entity.getCreatedAt())
                 .update();
 
@@ -66,7 +67,7 @@ public class LinkRepository {
             "update link set  last_check_time = (:lastCheckTime) where id = :link_id";
         jdbcClient.sql(sql)
             .param("link_id", id)
-            .param("lastCheckTime", lastCheckTime)
+            .param(lastCheckTimeString, lastCheckTime)
             .update();
     }
 

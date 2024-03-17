@@ -1,17 +1,16 @@
 package edu.java.stackoverflow;
 
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import java.util.List;
 
 public class StackOverFlowClient {
 
     private WebClient webClient;
     private final WebClient.Builder webClientBuilder = WebClient.builder();
     private static final String URL = "/questions/%d?site=stackoverflow";
-    private static final String questionComments = "/questions/%d/comments?site=stackoverflow";
+    private static final String QUESTIONS_COMMENTS = "/questions/%d/comments?site=stackoverflow";
 
     public StackOverFlowClient(String baseurl) {
         webClient = webClientBuilder.baseUrl(baseurl)
@@ -20,7 +19,7 @@ public class StackOverFlowClient {
 
     public StackOverFlowResponse fetchQuestion(long questionId) {
         String apiUrl = String.format(URL, questionId);
-        String commentsUrl = String.format(questionComments, questionId);
+        String commentsUrl = String.format(QUESTIONS_COMMENTS, questionId);
 
         Long comments = (long) webClient
             .get()

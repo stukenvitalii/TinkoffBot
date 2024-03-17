@@ -30,8 +30,8 @@ public class StackOverFlowQuestion {
     private Long commentCount;
 
     public Timestamp getLastActivityAsTimestamp() {
-        return Timestamp.valueOf(Instant.ofEpochMilli(
-                lastActivity *1000)
+        return Timestamp.valueOf(Instant.ofEpochSecond(
+                lastActivity)
             .atZone(ZoneId.systemDefault())
             .toLocalDateTime());
     }
