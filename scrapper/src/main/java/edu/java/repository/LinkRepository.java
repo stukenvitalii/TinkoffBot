@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LinkRepository {
     private final JdbcClient jdbcClient;
+    private final String lastCheckTimeString = "lastCheckTime";
 
     @Transactional
     public void add(Link entity) {
@@ -22,7 +23,7 @@ public class LinkRepository {
         jdbcClient.sql(sql)
             .param("url", entity.getUrl())
             .param("chatId", entity.getChatId())
-            .param("lastCheckTime", entity.getLastCheckTime())
+            .param(lastCheckTimeString, entity.getLastCheckTime())
             .param("createdAt", entity.getCreatedAt())
             .update();
     }
@@ -49,7 +50,7 @@ public class LinkRepository {
             "update link set  last_check_time = (:lastCheckTime) where id = :link_id";
         jdbcClient.sql(sql)
             .param("link_id", id)
-            .param("lastCheckTime", lastCheckTime)
+            .param(lastCheckTimeString, lastCheckTime)
             .update();
     }
 

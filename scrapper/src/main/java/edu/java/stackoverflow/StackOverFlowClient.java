@@ -10,7 +10,7 @@ public class StackOverFlowClient {
     private WebClient webClient;
     private final WebClient.Builder webClientBuilder = WebClient.builder();
     private static final String URL = "/questions/%d?site=stackoverflow";
-    private static final String commentsURL = "/questions/%d/answers?site=stackoverflow";
+    private static final String COMMENTS_URL = "/questions/%d/answers?site=stackoverflow";
 
     public StackOverFlowClient(String baseurl) {
         webClient = webClientBuilder.baseUrl(baseurl)

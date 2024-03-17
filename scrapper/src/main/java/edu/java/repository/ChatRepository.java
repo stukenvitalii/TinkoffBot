@@ -1,17 +1,11 @@
 package edu.java.repository;
 
 import edu.java.model.dto.Chat;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import javax.sql.DataSource;
-import java.math.BigInteger;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,9 +22,9 @@ public class ChatRepository {
     }
 
     @Transactional
-    public void remove(Long chat_id) {
+    public void remove(Long chatId) {
         String sql = "delete from chat where chat_id = ?";
-        int count = jdbcClient.sql(sql).param(1, chat_id).update();
+        int count = jdbcClient.sql(sql).param(1, chatId).update();
         if (count == 0) {
             throw new RuntimeException("chat not found");
         }

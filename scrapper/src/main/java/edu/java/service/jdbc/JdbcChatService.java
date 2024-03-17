@@ -3,9 +3,9 @@ package edu.java.service.jdbc;
 import edu.java.model.dto.Chat;
 import edu.java.repository.ChatRepository;
 import edu.java.service.ChatService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -1,11 +1,11 @@
 package edu.java.model.dto;
 
+import java.net.URI;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.net.URI;
-import java.sql.Timestamp;
 
 @Getter
 @Setter

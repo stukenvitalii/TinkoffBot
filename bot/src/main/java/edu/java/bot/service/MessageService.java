@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,11 +29,12 @@ public class MessageService {
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
     private final TelegramBot telegramBot;
+    private Logger logger;
 
     public MessageService(
-            CommandHandler commandHandler,
-            UserService userRepository,
-            UrlProcessor urlProcessor, TelegramBot telegramBot
+        CommandHandler commandHandler,
+        UserService userRepository,
+        UrlProcessor urlProcessor, TelegramBot telegramBot
     ) {
         this.commandHandler = commandHandler;
         this.userRepository = userRepository;
@@ -55,12 +57,6 @@ public class MessageService {
         }
 
         var user = userOptional.get();
-//        System.out.println(user.getState() + " my state!!!!!!!!!!!!");
-//        if (user.getState().equals(SessionState.WAITING_FOR_NOTIFICATION)) {
-//            System.out.println("im here" + text);
-//
-//            return text;
-//        }
         try {
             if (!user.getState().equals(SessionState.BASE_STATE)) {
                 URI uri = new URI(text);
@@ -72,8 +68,7 @@ public class MessageService {
                     return processStateUserMessage(user, uri);
                 }
                 throw new URISyntaxException(text, INVALID_FOR_TRACK_SITE_MESSAGE);
-            }
-            else {
+            } else {
                 throw new URISyntaxException(text, INVALID_COMMAND_MESSAGE);
             }
         } catch (URISyntaxException e) {
@@ -141,17 +136,17 @@ public class MessageService {
     }
 
     public void sendNotification(List<Long> tgIds, URI url, String description) {
-        for (Long id: tgIds) {
+        for (Long id : tgIds) {
             try {
                 User user = userRepository.findUserById(id).get();
                 user.setState(SessionState.WAITING_FOR_NOTIFICATION);
                 userRepository.saveUser(user);
                 telegramBot.execute(new SendMessage(
                     id,
-                    "New update from link " + url.toString() + " message: " + description));
-            }
-            catch (Exception ex) {
-                System.out.println("not registered");
+                    "New update from link " + url.toString() + " message: " + description
+                ));
+            } catch (Exception ex) {
+                logger.warning("User is not registered");
                 return;
             }
         }

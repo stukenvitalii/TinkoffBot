@@ -1,9 +1,9 @@
 package edu.java.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
-import java.sql.Timestamp;
 
 @Getter
 @Setter

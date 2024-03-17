@@ -1,13 +1,10 @@
 package edu.java.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.model.dto.Link;
 import edu.java.model.request.AddLinkRequest;
 import edu.java.model.request.RemoveLinkRequest;
 import edu.java.model.response.LinkResponse;
 import edu.java.model.response.ListLinksResponse;
-import edu.java.repository.LinkRepository;
 import edu.java.service.jdbc.JdbcLinkService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -15,16 +12,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import javax.annotation.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,11 +69,6 @@ public class LinksApiController implements LinksApi {
         @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
         @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
     ) {
-
-        for (Link link : jdbcLinkService.getLinks()) {
-            System.out.println(link.getUrl());
-        }
-
         try {
             return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
                 "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",
@@ -99,14 +87,6 @@ public class LinksApiController implements LinksApi {
         @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody
         AddLinkRequest body
     ) {
-        Link link = new Link();
-        link.setChatId(3);
-        link.setUrl(URI.create("https://github.com"));
-        link.setCreatedAt(new Timestamp(234234));
-        link.setLastCheckTime(new Timestamp(234234));
-
-        jdbcLinkService.addLink(link);
-
         try {
             return new ResponseEntity<LinkResponse>(objectMapper.readValue(
                 "{\n  \"id\" : 0,\n  \"url\" : \"http://example.com/aeiou\"\n}",

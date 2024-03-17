@@ -33,7 +33,7 @@ public class UpdatesApiController implements UpdatesApi {
         @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid
         @RequestBody LinkUpdateRequest body
     ) {
-        messageService.sendNotification(body.getTgChatIds(),body.getUrl(), body.getDescription());
+        messageService.sendNotification(body.getTgChatIds(), body.getUrl(), body.getDescription());
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

@@ -1,11 +1,8 @@
 package edu.java.client;
 
 import edu.java.model.request.LinkUpdateRequest;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 

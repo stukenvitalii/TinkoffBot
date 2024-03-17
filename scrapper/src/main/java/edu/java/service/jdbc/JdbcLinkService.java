@@ -3,10 +3,10 @@ package edu.java.service.jdbc;
 import edu.java.model.dto.Link;
 import edu.java.repository.LinkRepository;
 import edu.java.service.LinkService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 
 @Service
