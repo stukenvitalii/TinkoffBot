@@ -15,8 +15,8 @@ public class BotClient {
         this.webClient = webClient;
     }
 
-    public String updateLink(URI url, List<Long> tgChatIds) {
-        LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, url, "Обновление ссылки", tgChatIds);
+    public String updateLink(URI url, List<Long> tgChatIds, String description) {
+        LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, url, description, tgChatIds);
 
         return webClient
             .post()
