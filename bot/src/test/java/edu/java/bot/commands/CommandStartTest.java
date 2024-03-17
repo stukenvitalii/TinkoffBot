@@ -43,7 +43,7 @@ class CommandStartTest {
     }
 
     @Test
-    void handleRegisteredUser() {
+    void givenRegisteredUser_whenHandle_shouldReturnAlreadyRegisteredMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
         Optional<User> optionalMockUser = mock(Optional.class);
@@ -54,7 +54,7 @@ class CommandStartTest {
     }
 
     @Test
-    public void handleNotRegisteredUser() {
+    public void givenNotRegisteredUser_whenHandle_shouldReturnSuccessRegistrationMessage() {
         long chatId = 123456L;
         Update update = getUpdate(chatId);
 
