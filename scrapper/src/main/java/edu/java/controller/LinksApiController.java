@@ -5,10 +5,13 @@ import edu.java.model.request.AddLinkRequest;
 import edu.java.model.request.RemoveLinkRequest;
 import edu.java.model.response.LinkResponse;
 import edu.java.model.response.ListLinksResponse;
+import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.service.jdbc.JdbcLinkService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -37,10 +40,14 @@ public class LinksApiController implements LinksApi {
     private final HttpServletRequest request;
 
     @Autowired
-    public LinksApiController(JdbcLinkService jdbcLinkService, ObjectMapper objectMapper, HttpServletRequest request) {
+    private final JpaLinkRepository jpaLinkRepository;
+
+    @Autowired
+    public LinksApiController(JdbcLinkService jdbcLinkService, ObjectMapper objectMapper, HttpServletRequest request, JpaLinkRepository jpaLinkRepository) {
         this.jdbcLinkService = jdbcLinkService;
         this.objectMapper = objectMapper;
         this.request = request;
+        this.jpaLinkRepository = jpaLinkRepository;
     }
 
     public ResponseEntity<LinkResponse> linksDelete(
@@ -69,6 +76,7 @@ public class LinksApiController implements LinksApi {
         @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
         @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
     ) {
+        jpaLinkRepository.removeLinkById(4L);
         try {
             return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
                 "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",

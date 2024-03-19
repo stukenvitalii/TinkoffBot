@@ -16,37 +16,26 @@ public class LinkRepository {
     private final String lastCheckTimeString = "lastCheckTime";
 
     @Transactional
-    public int add(Link entity) {
-        try {
-            String sql =
-                "insert into link(url, chat_id, last_check_time,created_at) "
-                    + "values(:url,:chatId,:lastCheckTime,:createdAt)";
+    public void add(Link entity) {
+        String sql =
+            "insert into link(url, chat_id, last_check_time,created_at) "
+                + "values(:url,:chatId,:lastCheckTime,:createdAt)";
 
-            jdbcClient.sql(sql)
-                .param("url", entity.getUrl().toString())
-                .param("chatId", entity.getChatId())
-                .param(lastCheckTimeString, entity.getLastCheckTime())
-                .param("createdAt", entity.getCreatedAt())
-                .update();
-
-        } catch (Exception e) {
-            return -1;
-        }
-        return 1;
+        jdbcClient.sql(sql)
+            .param("url", entity.getUrl().toString())
+            .param("chatId", entity.getChatId())
+            .param(lastCheckTimeString, entity.getLastCheckTime())
+            .param("createdAt", entity.getCreatedAt())
+            .update();
     }
 
     @Transactional
-    public int remove(Long id) {
-        try {
-            String sql = "delete from link where id = ?";
-            int count = jdbcClient.sql(sql).param(1, id).update();
-            if (count == 0) {
-                throw new RuntimeException("link not found");
-            }
-        } catch (RuntimeException e) {
-            return -1;
+    public void remove(Long id) {
+        String sql = "delete from link where id = ?";
+        int count = jdbcClient.sql(sql).param(1, id).update();
+        if (count == 0) {
+            throw new RuntimeException("link not found");
         }
-        return 1;
     }
 
     @Transactional(readOnly = true)
