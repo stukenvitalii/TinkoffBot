@@ -1,4 +1,4 @@
-package edu.java.repository;
+package edu.java.repository.jdbc;
 
 import edu.java.model.dto.Link;
 import edu.java.model.dto.LinkSof;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class LinkRepository {
+public class JdbcLinkRepository {
     private final JdbcClient jdbcClient;
     private final String lastCheckTimeString = "lastCheckTime";
 
@@ -27,6 +27,7 @@ public class LinkRepository {
             .param(lastCheckTimeString, entity.getLastCheckTime())
             .param("createdAt", entity.getCreatedAt())
             .update();
+        System.out.println("Im jdbc");
     }
 
     @Transactional
