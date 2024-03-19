@@ -1,18 +1,17 @@
 package edu.java.model.dto;
 
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import java.io.Serializable;
 import java.net.URI;
 import java.sql.Timestamp;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 
 @Getter
 @Setter
@@ -21,6 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 @Entity
 public class Link implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Convert(converter = UriConverter.class)
