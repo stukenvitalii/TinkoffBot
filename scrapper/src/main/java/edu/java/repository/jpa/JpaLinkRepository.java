@@ -10,18 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Transactional
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {
     List<Link> findAll();
 
-//    List<Link> findOldLinks
+    @Modifying
+    @Query("SELECT l FROM Link l WHERE (CURRENT_TIMESTAMP() - l.lastCheckTime) > 30000")
+    List<Link> findOldLinks();
 
-    //void save(Link link);
+    Link save(Link link);
 
-    @Transactional
     void removeLinkById(Long id);
 
     @Modifying
-    @Query("update Link set  lastCheckTime = (:lastCheckTime) where id = :linkId")
+    @Query("update Link set  lastCheckTime = :lastCheckTime where id = :linkId")
     void updateLinkLastCheckTimeById(Timestamp lastCheckTime, Long linkId);
 
     @Modifying
