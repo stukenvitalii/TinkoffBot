@@ -2,62 +2,55 @@ package edu.java.service.jdbc;
 
 import edu.java.model.dto.Link;
 import edu.java.model.dto.LinkSof;
-import edu.java.repository.LinkRepository;
+import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.service.LinkService;
 import java.sql.Timestamp;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
 
-    private final LinkRepository linkRepository;
+    private final JdbcLinkRepository jdbcLinkRepository;
 
     @Override
     public List<Link> getLinks() {
-        return linkRepository.findAll();
+        return jdbcLinkRepository.findAll();
     }
 
     @Override
     public void addLink(Link link) {
-        linkRepository.add(link);
+        jdbcLinkRepository.add(link);
     }
 
     @Override
     public void removeLink(Long id) {
-        linkRepository.remove(id);
-    }
-
-    @Override
-    public void updateLinkLastCheckTime(Long id, Timestamp lastCheckTime) {
-        linkRepository.updateLinkLastCheckTimeById(id, lastCheckTime);
+        jdbcLinkRepository.remove(id);
     }
 
     @Override
     public List<Link> getUnUpdatedLinks() {
-        return linkRepository.findUnUpdatedLinks();
+        return jdbcLinkRepository.findUnUpdatedLinks();
     }
 
     @Override
     public void updateLinkLastCheckTimeById(Long id, Timestamp lastCheckTime) {
-        linkRepository.updateLinkLastCheckTimeById(id, lastCheckTime);
+        jdbcLinkRepository.updateLinkLastCheckTimeById(id, lastCheckTime);
     }
 
     @Override
     public LinkSof getLinkPropertiesById(Long id) {
-        return linkRepository.getLinkPropertiesById(id);
+        return jdbcLinkRepository.getLinkPropertiesById(id);
     }
 
     @Override
     public void updateCountOfCommentsById(Long id, Long count) {
-        linkRepository.updateCountOfCommentsById(id, count);
+        jdbcLinkRepository.updateCountOfCommentsById(id, count);
     }
 
     @Override
     public void updateCountOfAnswersById(Long id, Long count) {
-        linkRepository.updateCountOfAnswersById(id, count);
+        jdbcLinkRepository.updateCountOfAnswersById(id, count);
     }
 }
