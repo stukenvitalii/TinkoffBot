@@ -1,4 +1,4 @@
-package edu.java.repository;
+package edu.java.repository.jooq;
 
 import edu.java.domain.jooq.tables.records.LinkRecord;
 import edu.java.domain.jooq.tables.records.SofLinkPropertiesRecord;
@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import edu.java.model.dto.LinkSof;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -31,10 +32,11 @@ public class JooqLinkRepository {
             .set(LINK.CREATED_AT, offsetDateTimeFromTimestamp(entity.getCreatedAt()))
             .returning(LINK)
             .fetchOne();
+        System.out.println("Im jooq");
     }
 
-    public List<LinkRecord> findAll() {
-        return dslContext.selectFrom(LINK).fetch();
+    public List<Link> findAll() {
+        return dslContext.selectFrom(LINK).fetchInto(Link.class);
     }
 
     public void remove(Long id) {
@@ -44,7 +46,7 @@ public class JooqLinkRepository {
     }
 
     public List<Link> findUnUpdatedLinks() {
-        return dslContext.resultQuery("select * from LINK where EXTRACT(SECOND FROM (now() -last_check_time )) > 30")
+        return dslContext.resultQuery("select * from LINK where EXTRACT(SECOND FROM (now() - last_check_time )) > 30")
             .fetchInto(Link.class); //TODO refactor?
     }
 
@@ -56,10 +58,10 @@ public class JooqLinkRepository {
             .fetchOne();
     }
 
-    public SofLinkPropertiesRecord getLinkPropertiesById(Long id) {
+    public LinkSof getLinkPropertiesById(Long id) {
         return dslContext.selectFrom(SOF_LINK_PROPERTIES)
             .where(SOF_LINK_PROPERTIES.LINK_ID.eq(id))
-            .fetchOne();
+            .fetchOneInto(LinkSof.class);
     }
 
     public void updateCountOfCommentsById(Long id, Long count) {
