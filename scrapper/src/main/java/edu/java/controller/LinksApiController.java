@@ -1,11 +1,13 @@
 package edu.java.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.model.dto.Link;
 import edu.java.model.request.AddLinkRequest;
 import edu.java.model.request.RemoveLinkRequest;
 import edu.java.model.response.LinkResponse;
 import edu.java.model.response.ListLinksResponse;
 import edu.java.repository.jpa.JpaLinkRepository;
+import edu.java.service.LinkService;
 import edu.java.service.jdbc.JdbcLinkService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -15,6 +17,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.net.URI;
+import java.sql.Timestamp;
 import javax.annotation.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
            date = "2024-02-29T10:09:42.512141887Z[GMT]")
 @RestController
 public class LinksApiController implements LinksApi {
-    private final JdbcLinkService jdbcLinkService;
     private static final Logger LOGGER = LoggerFactory.getLogger(LinksApiController.class);
     private final String acceptString = "Accept";
     private final String applicationJsonString = "application/json";
@@ -39,15 +42,13 @@ public class LinksApiController implements LinksApi {
 
     private final HttpServletRequest request;
 
-    @Autowired
-    private final JpaLinkRepository jpaLinkRepository;
+    private final LinkService linkService;
 
     @Autowired
-    public LinksApiController(JdbcLinkService jdbcLinkService, ObjectMapper objectMapper, HttpServletRequest request, JpaLinkRepository jpaLinkRepository) {
-        this.jdbcLinkService = jdbcLinkService;
+    public LinksApiController(ObjectMapper objectMapper, HttpServletRequest request, LinkService linkService) {
+        this.linkService = linkService;
         this.objectMapper = objectMapper;
         this.request = request;
-        this.jpaLinkRepository = jpaLinkRepository;
     }
 
     public ResponseEntity<LinkResponse> linksDelete(
@@ -58,8 +59,6 @@ public class LinksApiController implements LinksApi {
         @RequestBody
         RemoveLinkRequest body
     ) {
-
-        jdbcLinkService.removeLink(2L);
         try {
             return new ResponseEntity<LinkResponse>(objectMapper.readValue(
                 "{\n  \"id\" : 1,\n  \"url\" : \"http://example.com/aeiou\"\n}",
@@ -76,7 +75,14 @@ public class LinksApiController implements LinksApi {
         @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
         @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
     ) {
-        jpaLinkRepository.removeLinkById(4L);
+        Link link = new Link();
+        link.setUrl(URI.create("https://github.com"));
+        link.setChatId(1000);
+        link.setCreatedAt(new Timestamp(354323));
+        link.setLastCheckTime(new Timestamp(309483));
+
+        linkService.addLink(link);
+
         try {
             return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
                 "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",
