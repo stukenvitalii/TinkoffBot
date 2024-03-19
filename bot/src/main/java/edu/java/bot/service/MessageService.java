@@ -29,7 +29,7 @@ public class MessageService {
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
     private final TelegramBot telegramBot;
-    private Logger logger;
+//    private Logger logger;
 
     public MessageService(
         CommandHandler commandHandler,
@@ -146,7 +146,7 @@ public class MessageService {
                     "New update from link " + url.toString() + " message: " + description
                 ));
             } catch (Exception ex) {
-                logger.warning("User is not registered");
+//                logger.warning("User is not registered");
                 return;
             }
         }
