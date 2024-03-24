@@ -1,5 +1,6 @@
 package edu.java.model.dto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,8 +25,14 @@ public class Link implements Serializable {
     private Long id;
 
     @Convert(converter = UriConverter.class)
+    @Column(name = "url")
     private URI url;
+    @Column(name = "chat_id")
     private long chatId;
+    @Column(name = "last_check_time")
+
     private Timestamp lastCheckTime;
+    @Column(name = "created_at")
+
     private Timestamp createdAt;
 }
