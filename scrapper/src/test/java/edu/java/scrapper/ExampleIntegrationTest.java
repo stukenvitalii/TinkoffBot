@@ -18,7 +18,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 public class ExampleIntegrationTest extends IntegrationTest {
     @Test
-    @Timeout(20000)
     public void testLiquibaseMigration() throws SQLException, FileNotFoundException, LiquibaseException {
         IntegrationTest.runMigrations(POSTGRES);
 

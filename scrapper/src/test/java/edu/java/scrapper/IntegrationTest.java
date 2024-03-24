@@ -9,6 +9,8 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import org.junit.jupiter.api.Timeout;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -33,7 +35,8 @@ public abstract class IntegrationTest {
         POSTGRES = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("scrapper")
             .withUsername("postgres")
-            .withPassword("postgres");
+            .withPassword("postgres")
+            .withStartupTimeoutSeconds(30);
         POSTGRES.start();
 
         try {
