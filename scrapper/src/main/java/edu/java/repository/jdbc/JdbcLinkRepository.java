@@ -27,7 +27,6 @@ public class JdbcLinkRepository {
             .param(lastCheckTimeString, entity.getLastCheckTime())
             .param("createdAt", entity.getCreatedAt())
             .update();
-        System.out.println("Im jdbc");
     }
 
     @Transactional

@@ -5,7 +5,6 @@ import edu.java.model.dto.LinkSof;
 import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.repository.jpa.JpaSofRepository;
 import edu.java.service.LinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Timestamp;
 import java.util.List;
 

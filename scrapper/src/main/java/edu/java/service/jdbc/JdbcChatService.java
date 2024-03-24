@@ -5,7 +5,6 @@ import edu.java.repository.jdbc.JdbcChatRepository;
 import edu.java.service.ChatService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 public class JdbcChatService implements ChatService {

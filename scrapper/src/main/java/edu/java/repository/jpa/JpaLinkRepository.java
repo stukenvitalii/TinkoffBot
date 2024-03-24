@@ -1,14 +1,12 @@
 package edu.java.repository.jpa;
 
 import edu.java.model.dto.Link;
-import edu.java.model.dto.LinkSof;
+import java.sql.Timestamp;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
-import java.sql.Timestamp;
-import java.util.List;
 
 @Transactional
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {

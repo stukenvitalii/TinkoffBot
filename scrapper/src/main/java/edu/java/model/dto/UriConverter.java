@@ -1,10 +1,8 @@
 package edu.java.model.dto;
 
 import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 import java.net.URI;
 
-//@Converter(autoApply = true)
 public class UriConverter implements AttributeConverter<URI, String> {
 
 

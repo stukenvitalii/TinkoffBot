@@ -1,24 +1,17 @@
 package edu.java.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.model.dto.Link;
 import edu.java.model.request.AddLinkRequest;
 import edu.java.model.request.RemoveLinkRequest;
 import edu.java.model.response.LinkResponse;
 import edu.java.model.response.ListLinksResponse;
-import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.service.LinkService;
-import edu.java.service.jdbc.JdbcLinkService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
-import java.sql.Timestamp;
 import javax.annotation.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,14 +68,6 @@ public class LinksApiController implements LinksApi {
         @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
         @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
     ) {
-        Link link = new Link();
-        link.setUrl(URI.create("https://github.com"));
-        link.setChatId(1000);
-        link.setCreatedAt(new Timestamp(354323));
-        link.setLastCheckTime(new Timestamp(309483));
-
-        linkService.addLink(link);
-
         try {
             return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
                 "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",

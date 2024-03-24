@@ -5,7 +5,6 @@ import edu.java.github.GitHubClient;
 import edu.java.github.GitHubRepository;
 import edu.java.model.dto.Link;
 import edu.java.service.LinkService;
-import edu.java.service.jdbc.JdbcLinkService;
 import edu.java.stackoverflow.StackOverFlowClient;
 import edu.java.stackoverflow.StackOverFlowQuestion;
 import java.sql.Timestamp;

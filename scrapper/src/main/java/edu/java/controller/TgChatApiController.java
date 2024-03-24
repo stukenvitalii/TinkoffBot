@@ -3,7 +3,6 @@ package edu.java.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.model.dto.Chat;
 import edu.java.service.ChatService;
-import edu.java.service.jdbc.JdbcChatService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;

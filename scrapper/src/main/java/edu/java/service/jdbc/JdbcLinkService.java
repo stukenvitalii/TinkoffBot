@@ -7,7 +7,6 @@ import edu.java.service.LinkService;
 import java.sql.Timestamp;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {

@@ -1,13 +1,11 @@
 package edu.java.repository.jooq;
 
-import edu.java.domain.jooq.tables.records.LinkRecord;
-import edu.java.domain.jooq.tables.records.SofLinkPropertiesRecord;
 import edu.java.model.dto.Link;
+import edu.java.model.dto.LinkSof;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import edu.java.model.dto.LinkSof;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,7 +30,6 @@ public class JooqLinkRepository {
             .set(LINK.CREATED_AT, offsetDateTimeFromTimestamp(entity.getCreatedAt()))
             .returning(LINK)
             .fetchOne();
-        System.out.println("Im jooq");
     }
 
     public List<Link> findAll() {

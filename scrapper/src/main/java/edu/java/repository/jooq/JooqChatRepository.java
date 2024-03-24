@@ -1,12 +1,10 @@
 package edu.java.repository.jooq;
 
 import edu.java.model.dto.Chat;
-import edu.java.model.dto.Link;
+import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 import static edu.java.domain.jooq.Tables.CHAT;
-import static edu.java.domain.jooq.Tables.LINK;
 
 @Repository
 public class JooqChatRepository {
