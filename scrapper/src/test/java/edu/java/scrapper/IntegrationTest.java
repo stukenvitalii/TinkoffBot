@@ -35,8 +35,7 @@ public abstract class IntegrationTest {
         POSTGRES = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("scrapper")
             .withUsername("postgres")
-            .withPassword("postgres")
-            .withStartupTimeoutSeconds(30);
+            .withPassword("postgres");
         POSTGRES.start();
 
         try {
