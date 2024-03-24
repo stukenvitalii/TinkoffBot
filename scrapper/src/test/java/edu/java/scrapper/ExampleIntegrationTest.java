@@ -5,6 +5,7 @@ import liquibase.database.Database;
 import liquibase.exception.LiquibaseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 public class ExampleIntegrationTest extends IntegrationTest {
     @Test
+    @Timeout(20000)
     public void testLiquibaseMigration() throws SQLException, FileNotFoundException, LiquibaseException {
         IntegrationTest.runMigrations(POSTGRES);
 
