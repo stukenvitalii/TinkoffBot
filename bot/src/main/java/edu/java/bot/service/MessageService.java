@@ -125,8 +125,6 @@ public class MessageService {
 
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
-//        System.out.println(new ScrapperClient(WebClient.builder().build()).deleteLinkById(user.getId(),
-//            new RemoveLinkRequest().link(uri.toString())));
         return true;
     }
 
