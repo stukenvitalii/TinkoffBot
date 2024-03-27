@@ -37,6 +37,7 @@ public class LinksApiController implements LinksApi {
 
     private final LinkService linkService;
 
+
     @Autowired
     public LinksApiController(ObjectMapper objectMapper, HttpServletRequest request, LinkService linkService) {
         this.linkService = linkService;
