@@ -1,6 +1,8 @@
 package edu.java.configuration;
 
 import edu.java.client.BotClient;
+import edu.java.exception.ClientException;
+import edu.java.exception.ServerException;
 import edu.java.github.GitHubClient;
 import edu.java.github.GitHubRepository;
 import edu.java.model.dto.Link;
@@ -15,6 +17,7 @@ import java.util.regex.Pattern;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @EnableScheduling
+@EnableRetry
 @ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true", matchIfMissing = true)
 public class LinkUpdateScheduler {
     private final Logger logger = Logger.getLogger(LinkUpdateScheduler.class.getName());
@@ -92,13 +96,18 @@ public class LinkUpdateScheduler {
         String owner = extractOwnerName(url);
         String repoName = extractRepoName(url);
 
-        GitHubRepository rep = gitHubClient.getRepositoryInfo(owner, repoName).block();
-        Timestamp lastPush = rep.getLastPush();
+        try {
+            GitHubRepository rep = gitHubClient.getRepositoryInfo(owner, repoName).block();
+            Timestamp lastPush = rep.getLastPush();
 
-        if (lastPush.after(link.getLastCheckTime())) {
-            botClient.updateLink(link.getUrl(), List.of(link.getChatId()), "Обновление данных");
-            linkService.updateLinkLastCheckTimeById(link.getId(), now);
+            if (lastPush.after(link.getLastCheckTime())) {
+                botClient.updateLink(link.getUrl(), List.of(link.getChatId()), "Обновление данных");
+                linkService.updateLinkLastCheckTimeById(link.getId(), now);
+            }
+        } catch (ServerException | ClientException ex) {
+            logger.error(ex.getMessage());
         }
+
     }
 
     public static String extractOwnerName(String githubUrl) {
