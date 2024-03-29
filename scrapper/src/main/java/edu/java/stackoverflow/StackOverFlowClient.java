@@ -17,6 +17,8 @@ public class StackOverFlowClient {
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE).build();
     }
 
+
+    //TODO add retries
     public StackOverFlowResponse fetchQuestion(long questionId) {
         String apiUrl = String.format(URL, questionId);
         String commentsUrl = String.format(QUESTIONS_COMMENTS, questionId);

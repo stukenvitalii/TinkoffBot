@@ -15,6 +15,7 @@ public class BotClient {
         this.webClient = webClient;
     }
 
+    //TODO add retry
     public String updateLink(URI url, List<Long> tgChatIds, String description) {
         LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, url, description, tgChatIds);
 

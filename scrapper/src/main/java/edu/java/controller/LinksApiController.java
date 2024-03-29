@@ -78,7 +78,6 @@ public class LinksApiController implements LinksApi {
             LOGGER.error(errorString, e);
             return new ResponseEntity<ListLinksResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     public ResponseEntity<LinkResponse> linksPost(
