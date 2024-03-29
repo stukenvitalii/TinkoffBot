@@ -1,13 +1,25 @@
 package edu.java.github;
 
+import edu.java.exception.ClientException;
+import edu.java.exception.ServerException;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.RetryBackoffSpec;
 
 public class GitHubClient {
     private WebClient webClient;
     private final WebClient.Builder webClientBuilder = WebClient.builder();
+
+    @Autowired
+    private List<RuntimeException> retryOnExceptions;
+
+    @Autowired
+    private RetryBackoffSpec retryBackoffSpec;
 
     public GitHubClient(String baseurl) {
         webClient = webClientBuilder.baseUrl(baseurl)
@@ -21,6 +33,19 @@ public class GitHubClient {
             .uri(x -> x.path("/repos/{name}/{reposName}")
                 .build(name, reposName))
             .retrieve()
-            .bodyToMono(GitHubRepository.class);
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                response -> Mono.error(new ServerException("Server error", response.statusCode().value()))
+            )
+            .onStatus(
+                HttpStatusCode::is4xxClientError,
+                response -> Mono.error(new ClientException("Client error", response.statusCode().value()))
+            )
+            .bodyToMono(GitHubRepository.class)
+//            .retry(3)
+            .retryWhen(retryBackoffSpec
+                .filter(throwable -> retryOnExceptions.stream()
+                    .anyMatch(x -> x.getClass().isAssignableFrom(throwable.getClass()))));
+        //TODO refactor?
     }
 }
