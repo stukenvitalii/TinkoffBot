@@ -1,12 +1,12 @@
 package edu.java.configuration.retryconfig;
 
+import java.time.Duration;
+import java.util.List;
 import org.reactivestreams.Publisher;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
-import java.time.Duration;
-import java.util.List;
 
 public class RetryConfig extends Retry {
     private final int retries;
@@ -29,11 +29,9 @@ public class RetryConfig extends Retry {
             Duration delay = firstTime;
             delay = delay.multipliedBy(rs.totalRetries());
 
-            System.out.printf("retry %d with backoff %dmin%n", rs.totalRetries(), delay.toMinutes());
             return Mono.delay(delay)
                 .thenReturn(rs.totalRetries());
         } else {
-            System.out.printf("retries exhausted with error: %s%n", rs.failure().getMessage());
             throw Exceptions.propagate(rs.failure());
         }
     }
