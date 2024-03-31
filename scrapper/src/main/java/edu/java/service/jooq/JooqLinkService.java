@@ -31,7 +31,7 @@ public class JooqLinkService implements LinkService {
 
     @Override
     public List<Link> getUnUpdatedLinks() {
-        return jooqLinkRepository.findUnUpdatedLinks(30);
+        return jooqLinkRepository.findUnUpdatedLinks(Integer.parseInt("30"));
     }
 
     @Override
