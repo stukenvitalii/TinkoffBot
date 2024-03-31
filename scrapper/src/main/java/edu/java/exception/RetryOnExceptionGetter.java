@@ -16,13 +16,12 @@ public class RetryOnExceptionGetter {
     @Bean
     public List<RuntimeException> getExceptionList() {
         List<RuntimeException> exceptions = new ArrayList<>();
-        System.out.println();
-        List<String> tokens =  Arrays.stream(retryOnProperty.toLowerCase(Locale.ROOT).split("-")).toList();
-        if (tokens.contains("client") ) {
-            exceptions.add(new ClientException("Client error",400));
+        List<String> tokens = Arrays.stream(retryOnProperty.toLowerCase(Locale.ROOT).split("-")).toList();
+        if (tokens.contains("client")) {
+            exceptions.add(new ClientException("Client error"));
         }
-        if (tokens.contains("server") ) {
-            exceptions.add(new ServerException("Server error",500));
+        if (tokens.contains("server")) {
+            exceptions.add(new ServerException("Server error"));
         }
         return exceptions;
     }

@@ -1,10 +1,8 @@
 package edu.java.exception;
 
 public class ClientException extends RuntimeException {
-    private final int statusCode;
 
-    public ClientException(String message, int statusCode) {
+    public ClientException(String message) {
         super(message);
-        this.statusCode = statusCode;
     }
 }
