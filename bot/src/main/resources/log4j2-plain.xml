@@ -27,7 +27,6 @@
         <Logger name="org.springframework.web" level="DEBUG"/>
         <Logger name="sun.rmi" level="WARN"/>
         <Logger name="sun.rmi.transport" level="WARN"/>
-
         <Logger name="edu.java" level="TRACE"/>
 
         <Root level="INFO">
