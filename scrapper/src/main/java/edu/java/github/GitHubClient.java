@@ -1,7 +1,9 @@
 package edu.java.github;
 
+import edu.java.configuration.retryconfig.RetryConfig;
 import edu.java.exception.ClientException;
 import edu.java.exception.ServerException;
+import java.time.Duration;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,9 +16,6 @@ import reactor.util.retry.RetryBackoffSpec;
 public class GitHubClient {
     private WebClient webClient;
     private final WebClient.Builder webClientBuilder = WebClient.builder();
-
-    @Autowired
-    private List<RuntimeException> retryOnExceptions;
 
     @Autowired
     private RetryBackoffSpec retryBackoffSpec;
@@ -42,8 +41,6 @@ public class GitHubClient {
                 response -> Mono.error(new ClientException("Client error", response.statusCode().value()))
             )
             .bodyToMono(GitHubRepository.class)
-            .retryWhen(retryBackoffSpec
-                .filter(throwable -> retryOnExceptions.stream()
-                    .anyMatch(x -> x.getClass().isAssignableFrom(throwable.getClass()))));
+            .retryWhen(retryBackoffSpec);
     }
 }
