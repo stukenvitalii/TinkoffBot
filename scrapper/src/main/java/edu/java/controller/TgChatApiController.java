@@ -44,10 +44,6 @@ public class TgChatApiController implements TgChatApi {
         @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema()) @PathVariable("id")
         Long id
     ) {
-//        if (id == 123) {
-//            throw new IllegalStateException("Id is 123");
-//        }
-        // общение с бд
         String accept = request.getHeader(acceptString);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

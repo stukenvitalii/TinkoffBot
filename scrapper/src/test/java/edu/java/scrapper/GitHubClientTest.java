@@ -27,8 +27,7 @@ public class GitHubClientTest {
 
     @Test
     @DisplayName("test for check the required response body")
-    public void testFetchRepository() {
-        // Arrange
+    public void givenUrl_whenFetchRepository_shouldReturnNormalRepositoryEntity() {
         String name = "testOwner";
         String reposName = "testRepo";
 
@@ -39,11 +38,9 @@ public class GitHubClientTest {
                 .withBody("{\"id\":756021540,\"name\":\"testRepo\",\"defaultBranch\":\"master\"}")
             ));
 
-        // Act
         WebClient webClient = WebClient.builder().baseUrl("http://localhost:" + wireMockServer.port()).build();
         GitHubClient gitHubClient = new GitHubClient(webClient);
 
-        // Assert
         StepVerifier.create(gitHubClient.getRepositoryInfo(name, reposName))
             .expectNextMatches(repository -> repository.getName().equals("testRepo") &&
                 repository.getDefaultBranch().equals("master") &&

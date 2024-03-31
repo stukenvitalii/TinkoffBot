@@ -15,6 +15,5 @@ public class LinkUpdateScheduler {
     @Scheduled(fixedDelayString = "#{scheduler.interval}")
     public void update() {
         logger.info("I'm updating!");
-//        System.out.println(new ScrapperClient(WebClient.builder().build()).updateLink("https://github.com", List.of(1L,2L)));
     }
 }
