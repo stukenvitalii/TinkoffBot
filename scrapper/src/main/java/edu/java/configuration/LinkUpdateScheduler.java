@@ -17,11 +17,13 @@ import java.util.regex.Pattern;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 @Component
 @EnableScheduling
@@ -41,7 +43,8 @@ public class LinkUpdateScheduler {
     @Autowired
     private StackOverFlowClient stackOverFlowClient;
 
-    private final BotClient botClient = new BotClient(WebClient.builder().build());
+    @Autowired
+    private BotClient botClient;
 
     @Scheduled(fixedDelayString = "#{scheduler.interval}")
     public void update() {
@@ -67,27 +70,31 @@ public class LinkUpdateScheduler {
         Pattern pattern = Pattern.compile("questions/(?<id>\\d+)/");
         Matcher matcher = pattern.matcher(path); //TODO use regex
 
-        StackOverFlowQuestion question =
-            stackOverFlowClient.fetchQuestion(Long.parseLong("3332947")).getItems().getFirst();
-        Timestamp lastActivity = question.getLastActivityAsTimestamp();
+        try {
+            StackOverFlowQuestion question =
+                stackOverFlowClient.fetchQuestion(Long.parseLong("5765686574576456454")).getItems().getFirst();
+            Timestamp lastActivity = question.getLastActivityAsTimestamp();
 
-        if (lastActivity.after(link.getLastCheckTime())) {
-            String description = "обновление данных : ";
-            linkService.updateLinkLastCheckTimeById(link.getId(), now);
+            if (lastActivity.after(link.getLastCheckTime())) {
+                String description = "обновление данных : ";
+                linkService.updateLinkLastCheckTimeById(link.getId(), now);
 
-            if (question.getAnswerCount() > linkService.getLinkPropertiesById(link.getId()).getCountOfAnswer()) {
-                description += "\n"
-                    + "появился новый ответ";
-                linkService.updateCountOfAnswersById(link.getId(), question.getAnswerCount());
+                if (question.getAnswerCount() > linkService.getLinkPropertiesById(link.getId()).getCountOfAnswer()) {
+                    description += "\n"
+                        + "появился новый ответ";
+                    linkService.updateCountOfAnswersById(link.getId(), question.getAnswerCount());
+                }
+
+                if (question.getCommentCount() > linkService.getLinkPropertiesById(link.getId()).getCountOfComments()) {
+                    description += "\n"
+                        + "появился новый комментарий";
+                    linkService.updateCountOfCommentsById(link.getId(), question.getCommentCount());
+                }
+
+                botClient.updateLink(link.getUrl(), List.of(link.getChatId()), description);
             }
-
-            if (question.getCommentCount() > linkService.getLinkPropertiesById(link.getId()).getCountOfComments()) {
-                description += "\n"
-                    + "появился новый комментарий";
-                linkService.updateCountOfCommentsById(link.getId(), question.getCommentCount());
-            }
-
-            botClient.updateLink(link.getUrl(), List.of(link.getChatId()), description);
+        } catch (ClientException | ServerException e) {
+            logger.error(e.getMessage());
         }
     }
 
@@ -104,10 +111,9 @@ public class LinkUpdateScheduler {
                 botClient.updateLink(link.getUrl(), List.of(link.getChatId()), "Обновление данных");
                 linkService.updateLinkLastCheckTimeById(link.getId(), now);
             }
-        } catch (ServerException | ClientException ex) {
+        } catch (ServerException | ClientException | WebClientRequestException ex) {
             logger.error(ex.getMessage());
         }
-
     }
 
     public static String extractOwnerName(String githubUrl) {
