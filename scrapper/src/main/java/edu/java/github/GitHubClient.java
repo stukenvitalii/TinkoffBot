@@ -42,10 +42,8 @@ public class GitHubClient {
                 response -> Mono.error(new ClientException("Client error", response.statusCode().value()))
             )
             .bodyToMono(GitHubRepository.class)
-//            .retry(3)
             .retryWhen(retryBackoffSpec
                 .filter(throwable -> retryOnExceptions.stream()
                     .anyMatch(x -> x.getClass().isAssignableFrom(throwable.getClass()))));
-        //TODO refactor?
     }
 }
