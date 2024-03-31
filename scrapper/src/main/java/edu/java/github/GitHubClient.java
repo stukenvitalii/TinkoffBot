@@ -1,10 +1,7 @@
 package edu.java.github;
 
-import edu.java.configuration.retryconfig.RetryConfig;
 import edu.java.exception.ClientException;
 import edu.java.exception.ServerException;
-import java.time.Duration;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -34,11 +31,11 @@ public class GitHubClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is5xxServerError,
-                response -> Mono.error(new ServerException("Server error", response.statusCode().value()))
+                response -> Mono.error(new ServerException("Server error"))
             )
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                response -> Mono.error(new ClientException("Client error", response.statusCode().value()))
+                response -> Mono.error(new ClientException("Client error"))
             )
             .bodyToMono(GitHubRepository.class)
             .retryWhen(retryBackoffSpec);
