@@ -1,7 +1,6 @@
 package edu.java.configuration;
 
 import edu.java.configuration.retryconfig.RetryStrategy;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,7 +28,13 @@ public record ApplicationConfig(
     @NotNull
     int retryMaxAttempts,
     @NotNull
-    int retryDelay) {
+    int retryDelay,
+    @NotNull
+    int capacity,
+    @NotNull
+    int refill,
+    @NotNull
+    int timeout) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 }
