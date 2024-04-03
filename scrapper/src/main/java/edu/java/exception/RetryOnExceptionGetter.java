@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RetryOnExceptionGetter {
-    @Value("${app.retryOn}")
+    @Value("${app.retry.trigger}")
     private String retryOnProperty;
 
     @Bean
