@@ -6,13 +6,19 @@ app:
     enable: true
     interval: 30s
     force-check-delay: 30s
-  retryOn: server-client
-  retry-strategy: const
-  retry-max-attempts: 3
-  retry-delay: 5
-  refill: 5
-  capacity: 10
-  timeout: 1
+  retry:
+    trigger: server-client
+    strategy: const
+    max-attempts: 3
+    delay: 5
+  bucket:
+    refill: 5
+    capacity: 10
+    timeout: 1
+  kafka:
+    partitions-num: 10
+    replicas-num: 1
+    topics: topic1
 
 spring:
   jpa:
@@ -24,13 +30,16 @@ spring:
     name: scrapper
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-
   datasource:
     hikari:
       username: postgres
       password: postgres
       jdbc-url: jdbc:postgresql://localhost:5432/scrapper
       driver-class-name: org.postgresql.Driver
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+    bootstrapServers: localhost:29092
 
 server:
   port: 8080
