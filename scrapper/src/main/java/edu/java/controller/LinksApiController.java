@@ -31,13 +31,9 @@ public class LinksApiController implements LinksApi {
     private final String acceptString = "Accept";
     private final String applicationJsonString = "application/json";
     private final String errorString = "Couldn't serialize response for content type application/json";
-
     private final ObjectMapper objectMapper;
-
     private final HttpServletRequest request;
-
     private final LinkService linkService;
-
     @Autowired
     private Bucket bucket;
 
