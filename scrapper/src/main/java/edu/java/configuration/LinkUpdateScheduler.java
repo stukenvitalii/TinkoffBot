@@ -1,12 +1,13 @@
 package edu.java.configuration;
 
-import edu.java.client.BotClient;
 import edu.java.exception.ClientException;
 import edu.java.exception.ServerException;
 import edu.java.github.GitHubClient;
 import edu.java.github.GitHubRepository;
 import edu.java.model.dto.Link;
+import edu.java.model.request.LinkUpdateRequest;
 import edu.java.service.LinkService;
+import edu.java.service.sender.SenderService;
 import edu.java.stackoverflow.StackOverFlowClient;
 import edu.java.stackoverflow.StackOverFlowQuestion;
 import java.sql.Timestamp;
@@ -42,7 +43,7 @@ public class LinkUpdateScheduler {
     private StackOverFlowClient stackOverFlowClient;
 
     @Autowired
-    private BotClient botClient;
+    private SenderService senderService;
 
     @Scheduled(fixedDelayString = "#{scheduler.interval}")
     public void update() {
@@ -59,6 +60,10 @@ public class LinkUpdateScheduler {
             } else if (link.getUrl().getHost().equals("stackoverflow.com")) {
                 updateStackOverFlowLink(link, now);
             }
+            //! this is for testing
+            // TODO remove
+            LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, link.getUrl(), "Обновление данных", List.of(link.getChatId()));
+            senderService.updateLink(linkUpdateRequest);
         }
     }
 
@@ -88,8 +93,8 @@ public class LinkUpdateScheduler {
                         + "появился новый комментарий";
                     linkService.updateCountOfCommentsById(link.getId(), question.getCommentCount());
                 }
-
-                botClient.updateLink(link.getUrl(), List.of(link.getChatId()), description);
+                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, link.getUrl(), description, List.of(link.getChatId()));
+                senderService.updateLink(linkUpdateRequest);
             }
         } catch (ClientException | ServerException e) {
             logger.error(e.getMessage());
@@ -106,7 +111,8 @@ public class LinkUpdateScheduler {
             Timestamp lastPush = rep.getLastPush();
 
             if (lastPush.after(link.getLastCheckTime())) {
-                botClient.updateLink(link.getUrl(), List.of(link.getChatId()), "Обновление данных");
+                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, link.getUrl(), "Обновление данных", List.of(link.getChatId()));
+                senderService.updateLink(linkUpdateRequest);
                 linkService.updateLinkLastCheckTimeById(link.getId(), now);
             }
         } catch (ServerException | ClientException | WebClientRequestException ex) {
