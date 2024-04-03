@@ -1,4 +1,4 @@
-package edu.java.configuration.retryconfig;
+package edu.java.configuration.retry;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +7,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(prefix = "app", name = "retry-strategy", havingValue = "linear")
+@ConditionalOnProperty(prefix = "app.retry", name = "strategy", havingValue = "linear")
 public class LinearStrategy {
     //TODO implement linear
-    @Value("${app.retry-max-attempts}")
+    @Value("${app.retry.max-attempts}")
     private int maxAttempts;
 
-    @Value("${app.retry-delay}")
+    @Value("${app.retry.delay}")
     private int delay;
 
     @Autowired

@@ -1,4 +1,4 @@
-package edu.java.configuration.retryconfig;
+package edu.java.configuration.retry;
 
 public enum RetryStrategy {
     LINEAR,

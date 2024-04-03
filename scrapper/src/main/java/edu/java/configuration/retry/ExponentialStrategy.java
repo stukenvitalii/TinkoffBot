@@ -1,4 +1,4 @@
-package edu.java.configuration.retryconfig;
+package edu.java.configuration.retry;
 
 import java.time.Duration;
 import java.util.List;
@@ -11,12 +11,12 @@ import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
 
 @Configuration
-@ConditionalOnProperty(prefix = "app", name = "retry-strategy", havingValue = "const")
-public class ConstantStrategy {
-    @Value("${app.retry-max-attempts}")
+@ConditionalOnProperty(prefix = "app.retry", name = "strategy", havingValue = "exponential")
+public class ExponentialStrategy {
+    @Value("${app.retry.max-attempts}")
     private int maxAttempts;
 
-    @Value("${app.retry-delay}")
+    @Value("${app.retry.delay}")
     private int delay;
 
     @Autowired
@@ -24,7 +24,7 @@ public class ConstantStrategy {
 
     @Bean
     public RetryBackoffSpec retryBackoffSpec() {
-        return Retry.fixedDelay(maxAttempts, Duration.ofSeconds(delay)).filter(throwable -> retryOnExceptions.stream()
+        return Retry.backoff(maxAttempts, Duration.ofSeconds(delay)).filter(throwable -> retryOnExceptions.stream()
             .anyMatch(x -> x.getClass().isAssignableFrom(throwable.getClass())));
     }
 }
