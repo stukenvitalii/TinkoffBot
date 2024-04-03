@@ -29,7 +29,9 @@ public record ApplicationConfig(
     @NotNull
     String stackUrl,
     @NotNull
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+    @NotNull
+    boolean useQueue
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }

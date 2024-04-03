@@ -1,4 +1,5 @@
 app:
+  use-queue: true
   database-access-type: jooq
   gitUrl: "https://api.github.com"
   stackUrl: "https://api.stackexchange.com/2.3"
