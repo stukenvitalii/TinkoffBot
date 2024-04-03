@@ -54,7 +54,6 @@ services:
         KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
         KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-        TOPIC_AUTO_CREATE: todolist.notifications:1:1
         KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafka_config_jaas.conf"
       volumes:
         - ./scrapper/src/main/resources/docker/kafka_jaas_config.conf:/etc/kafka/kafka_config_jaas.conf
