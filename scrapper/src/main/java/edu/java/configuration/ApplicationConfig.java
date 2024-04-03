@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.configuration.access.AccessType;
 import edu.java.configuration.retry.RetryStrategy;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
