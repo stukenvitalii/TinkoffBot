@@ -14,17 +14,17 @@ import org.springframework.validation.annotation.Validated;
 
 public class LinkUpdateRequest {
     @JsonProperty("id")
-    private Long id = null;
+    private Long id;
 
     @JsonProperty("url")
-    private URI url = null;
+    private URI url;
 
     @JsonProperty("description")
-    private String description = null;
+    private String description;
 
     @JsonProperty("tgChatIds")
     @Valid
-    private List<Long> tgChatIds = null;
+    private List<Long> tgChatIds;
 
     public LinkUpdateRequest(Long id, URI url, String description, List<Long> tgChatIds) {
         this.id = id;
