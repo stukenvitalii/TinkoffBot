@@ -1,4 +1,4 @@
-package edu.java.bot.model;
+package edu.java.bot.client;
 
 import edu.java.bot.model.exception.ApiException;
 import edu.java.bot.model.request.AddLinkRequest;
