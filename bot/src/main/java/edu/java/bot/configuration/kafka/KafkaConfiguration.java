@@ -25,9 +25,4 @@ public class KafkaConfiguration {
             .replicas(replicasNum)
             .build();
     }
-
-    @KafkaListener(id = "myId", topics = "topic1") //TODO fix?
-    public void listen(String in) {
-        System.out.println(in);
-    }
 }
