@@ -2,7 +2,7 @@ package edu.java.bot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.bot.model.request.LinkUpdateRequest;
-import edu.java.bot.service.MessageService;
+import edu.java.bot.service.MessageServiceInterface;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,24 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UpdatesApiController implements UpdatesApi {
-    private final ObjectMapper objectMapper;
-
-    private final HttpServletRequest request;
-
-    private final MessageService messageService;
+    private final MessageServiceInterface messageServiceInterface;
 
     @Autowired
-    public UpdatesApiController(ObjectMapper objectMapper, HttpServletRequest request, MessageService messageService) {
-        this.objectMapper = objectMapper;
-        this.request = request;
-        this.messageService = messageService;
+    public UpdatesApiController(MessageServiceInterface messageServiceInterface) {
+        this.messageServiceInterface = messageServiceInterface;
     }
 
     public ResponseEntity<Void> updatesPost(
         @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid
         @RequestBody LinkUpdateRequest body
     ) {
-        messageService.sendNotification(body.getTgChatIds(), body.getUrl(), body.getDescription());
+        messageServiceInterface.sendNotification(body);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
