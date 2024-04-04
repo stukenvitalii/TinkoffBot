@@ -1,11 +1,19 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
+  kafka:
+    partitions-num: 10
+    replicas-num: 1
+    topics: topic1
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+    bootstrapServers: localhost:29092
 
 server:
   port: 8090
