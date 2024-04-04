@@ -62,7 +62,7 @@ public class LinkUpdateScheduler {
             }
             //! this is for testing
             // TODO remove
-            LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, link.getUrl(), "Обновление данных", List.of(link.getChatId()));
+            LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(link.getId(), link.getUrl(), "Обновление данных", List.of(link.getChatId()));
             senderService.updateLink(linkUpdateRequest);
         }
     }
@@ -93,7 +93,7 @@ public class LinkUpdateScheduler {
                         + "появился новый комментарий";
                     linkService.updateCountOfCommentsById(link.getId(), question.getCommentCount());
                 }
-                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, link.getUrl(), description, List.of(link.getChatId()));
+                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(link.getId(), link.getUrl(), description, List.of(link.getChatId()));
                 senderService.updateLink(linkUpdateRequest);
             }
         } catch (ClientException | ServerException e) {
@@ -111,7 +111,7 @@ public class LinkUpdateScheduler {
             Timestamp lastPush = rep.getLastPush();
 
             if (lastPush.after(link.getLastCheckTime())) {
-                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(1L, link.getUrl(), "Обновление данных", List.of(link.getChatId()));
+                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(link.getId(), link.getUrl(), "Обновление данных", List.of(link.getChatId()));
                 senderService.updateLink(linkUpdateRequest);
                 linkService.updateLinkLastCheckTimeById(link.getId(), now);
             }
