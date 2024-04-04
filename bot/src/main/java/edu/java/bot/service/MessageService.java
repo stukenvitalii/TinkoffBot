@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.SessionState;
+import edu.java.bot.model.request.LinkUpdateRequest;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
@@ -16,7 +17,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MessageService {
+public class MessageService implements MessageServiceInterface {
     public static final String DO_REGISTRATION_MESSAGE = "Необходимо зарегистрироваться.";
     public static final String INVALID_URI_MESSAGE = "Неверно указан URI.";
     public static final String INVALID_COMMAND_MESSAGE = "Команда введена некорректно.";
@@ -28,7 +29,6 @@ public class MessageService {
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
     private final TelegramBot telegramBot;
-//    private Logger logger;
 
     public MessageService(
         CommandHandler commandHandler,
@@ -134,15 +134,16 @@ public class MessageService {
         userRepository.saveUser(user);
     }
 
-    public void sendNotification(List<Long> tgIds, URI url, String description) {
-        for (Long id : tgIds) {
+    public void sendNotification(LinkUpdateRequest linkUpdateRequest) {
+        for (Long id : linkUpdateRequest.getTgChatIds()) {
             try {
                 User user = userRepository.findUserById(id).get();
                 user.setState(SessionState.WAITING_FOR_NOTIFICATION);
                 userRepository.saveUser(user);
                 telegramBot.execute(new SendMessage(
                     id,
-                    "New update from link " + url.toString() + " message: " + description
+                    "New update from link " + linkUpdateRequest.getUrl().toString() + " message: " +
+                        linkUpdateRequest.getDescription()
                 ));
             } catch (Exception ex) {
 //                logger.warning("User is not registered");
@@ -150,4 +151,20 @@ public class MessageService {
             }
         }
     }
+
+    // for testing
+    public void sendNotification(String linkUpdateRequest) {
+        try {
+            telegramBot.execute(new SendMessage(
+                644124159,
+                "New update from link " + linkUpdateRequest
+            ));
+        } catch (Exception ex) {
+//                logger.warning("User is not registered");
+            return;
+        }
+    }
 }
+
+
+
