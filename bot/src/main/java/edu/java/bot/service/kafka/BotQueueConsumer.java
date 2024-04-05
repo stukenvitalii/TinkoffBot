@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BotQueueConsumer {
-    private final KafkaTemplate<String, String> kafkaTemplate; //TODO change to Link...
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     private final MessageServiceInterface messageServiceInterface;
 
@@ -18,7 +18,17 @@ public class BotQueueConsumer {
     }
 
     @KafkaListener(id = "myId", topics = "topic1")
-    public void listen(String linkUpdateRequest) {
-        messageServiceInterface.sendNotification(linkUpdateRequest);
+    public void listen(LinkUpdateRequest linkUpdateRequest) {
+        if (checkLinkUpdateRequest(linkUpdateRequest)) {
+            messageServiceInterface.sendNotification(linkUpdateRequest);
+        }
+        else {
+            System.out.println("sending message to DLQ");
+            kafkaTemplate.send("topic_dlq",linkUpdateRequest.toString());
+        }
+    }
+
+    private boolean checkLinkUpdateRequest(LinkUpdateRequest body){
+        return body.getDescription() != null && !body.getTgChatIds().isEmpty() && body.getUrl() != null && body.getId() != null;
     }
 }
