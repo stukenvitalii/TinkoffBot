@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
 @Setter
 @Getter
 @Validated
+@NoArgsConstructor
 public class LinkUpdateRequest {
     @JsonProperty("id")
     private Long id;
@@ -85,7 +87,7 @@ public class LinkUpdateRequest {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("class LinkUpdate {\n");
+        sb.append("LinkUpdateRequest {\n");
 
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    url: ").append(toIndentedString(url)).append("\n");
