@@ -28,7 +28,4 @@ public interface MessageServiceInterface {
     private void updateTrackSitesAndCommit(User user, List<URI> trackSites) {
     }
     void sendNotification(LinkUpdateRequest linkUpdateRequest) ;
-
-    void sendNotification(String linkUpdateRequest) ;
-
 }
