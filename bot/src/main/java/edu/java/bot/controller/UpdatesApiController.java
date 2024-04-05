@@ -1,12 +1,10 @@
 package edu.java.bot.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.bot.model.request.LinkUpdateRequest;
 import edu.java.bot.service.MessageServiceInterface;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
