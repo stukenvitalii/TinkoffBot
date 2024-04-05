@@ -38,8 +38,11 @@ spring:
       jdbc-url: jdbc:postgresql://localhost:5432/scrapper
       driver-class-name: org.postgresql.Driver
   kafka:
-    consumer:
-      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer  # Для строковых ключей
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    properties:
+      spring.json.value.default.type: edu.java.model.request.LinkUpdateRequest
     bootstrapServers: localhost:29092
 
 server:
