@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 public class ScrapperQueueProducer implements SenderService {
     private final NewTopic topic;
 
-    private final KafkaTemplate<String, String> template;
+    private final KafkaTemplate<String, LinkUpdateRequest> template;
 
-    public ScrapperQueueProducer(NewTopic topic, KafkaTemplate<String, String> template) {
+    public ScrapperQueueProducer(NewTopic topic, KafkaTemplate<String, LinkUpdateRequest> template) {
         this.topic = topic;
         this.template = template;
     }
 
     @Override
     public void updateLink(LinkUpdateRequest linkUpdateRequest) {
-        template.send(topic.name(), "scrapper queue producer");
+        template.send(topic.name(), linkUpdateRequest);
     }
 }
