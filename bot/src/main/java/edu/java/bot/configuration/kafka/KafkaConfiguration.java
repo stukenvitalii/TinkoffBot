@@ -9,8 +9,11 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfiguration {
-    @Value("${app.kafka.topics}")
-    String topics;
+    @Value("${app.kafka.topic}")
+    String topic;
+
+    @Value("${app.kafka.topic_dlq}")
+    String topic_dlq;
 
     @Value("${app.kafka.partitions-num}")
     int partitionsNum;
@@ -20,7 +23,15 @@ public class KafkaConfiguration {
 
     @Bean
     public NewTopic topic() {
-        return TopicBuilder.name(topics)
+        return TopicBuilder.name(topic)
+            .partitions(partitionsNum)
+            .replicas(replicasNum)
+            .build();
+    }
+
+    @Bean
+    public NewTopic topic_dlq() {
+        return TopicBuilder.name(topic_dlq)
             .partitions(partitionsNum)
             .replicas(replicasNum)
             .build();
