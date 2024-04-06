@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
 public class GitHubClientTest {
@@ -15,7 +14,7 @@ public class GitHubClientTest {
 
     @BeforeAll
     public static void setUp() {
-        wireMockServer = new WireMockServer();
+        wireMockServer = new WireMockServer(8080);
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
     }
@@ -27,7 +26,8 @@ public class GitHubClientTest {
 
     @Test
     @DisplayName("test for check the required response body")
-    public void givenUrl_whenFetchRepository_shouldReturnNormalRepositoryEntity() {
+    public void testFetchRepository() {
+
         String name = "testOwner";
         String reposName = "testRepo";
 
@@ -38,8 +38,8 @@ public class GitHubClientTest {
                 .withBody("{\"id\":756021540,\"name\":\"testRepo\",\"defaultBranch\":\"master\"}")
             ));
 
-        WebClient webClient = WebClient.builder().baseUrl("http://localhost:" + wireMockServer.port()).build();
-        GitHubClient gitHubClient = new GitHubClient(webClient);
+        String baseUrl = "http://localhost:" + wireMockServer.port();
+        GitHubClient gitHubClient = new GitHubClient(baseUrl);
 
         StepVerifier.create(gitHubClient.getRepositoryInfo(name, reposName))
             .expectNextMatches(repository -> repository.getName().equals("testRepo") &&

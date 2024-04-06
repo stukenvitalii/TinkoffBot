@@ -1,10 +1,9 @@
 package edu.java.bot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.ScrapperClient;
+import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.SessionState;
-import edu.java.bot.model.exception.ApiException;
-import edu.java.bot.model.request.AddLinkRequest;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
@@ -14,8 +13,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class MessageService {
@@ -29,15 +29,18 @@ public class MessageService {
     private final CommandHandler commandHandler;
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
+    private final TelegramBot telegramBot;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 
     public MessageService(
         CommandHandler commandHandler,
         UserService userRepository,
-        UrlProcessor urlProcessor
+        UrlProcessor urlProcessor, TelegramBot telegramBot
     ) {
         this.commandHandler = commandHandler;
         this.userRepository = userRepository;
         this.urlProcessor = urlProcessor;
+        this.telegramBot = telegramBot;
     }
 
     public String prepareResponseMessage(Update update) {
@@ -70,8 +73,10 @@ public class MessageService {
                 throw new URISyntaxException(text, INVALID_COMMAND_MESSAGE);
             }
         } catch (URISyntaxException e) {
+            LOGGER.error(e.getReason());
             return e.getReason();
         } catch (MalformedURLException ex) {
+            LOGGER.error(ex.getMessage());
             return ex.getMessage();
         }
     }
@@ -87,7 +92,7 @@ public class MessageService {
         return INVALID_COMMAND_MESSAGE;
     }
 
-    private String prepareWaitTrackingMessage(User user, URI uri) throws MalformedURLException {
+    private String prepareWaitTrackingMessage(User user, URI uri) {
         if (urlProcessor.isValidUrl(uri)) {
             return (updateUserTrackingSites(user, uri)) ? SUCCESS_TRACK_SITE_MESSAGE
                 : DUPLICATE_TRACKING_MESSAGE;
@@ -103,16 +108,15 @@ public class MessageService {
         return INVALID_FOR_TRACK_SITE_MESSAGE;
     }
 
-    private boolean updateUserTrackingSites(User user, URI uri) throws MalformedURLException {
+    private boolean updateUserTrackingSites(User user, URI uri) {
         List<URI> trackSites = new ArrayList<>(user.getSites());
 
         try {
-            new ScrapperClient(WebClient.builder().build()).addLinkById(user.getId(),
-                new AddLinkRequest().link(uri.toURL()));
             trackSites.add(uri);
             updateTrackSitesAndCommit(user, trackSites);
             return true;
-        } catch (ApiException ex) {
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage());
             return false;
         }
     }
@@ -122,9 +126,9 @@ public class MessageService {
         if (!trackSites.contains(uri)) {
             return false;
         }
-
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
+
         return true;
     }
 
@@ -134,4 +138,20 @@ public class MessageService {
         userRepository.saveUser(user);
     }
 
+    public void sendNotification(List<Long> tgIds, URI url, String description) {
+        for (Long id : tgIds) {
+            try {
+                User user = userRepository.findUserById(id).get();
+                user.setState(SessionState.WAITING_FOR_NOTIFICATION);
+                userRepository.saveUser(user);
+                telegramBot.execute(new SendMessage(
+                    id,
+                    "New update from link " + url.toString() + " message: " + description
+                ));
+            } catch (Exception ex) {
+                LOGGER.warn("User is not registered");
+                return;
+            }
+        }
+    }
 }

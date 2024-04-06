@@ -1,6 +1,8 @@
 package edu.java.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.model.dto.Chat;
+import edu.java.service.jdbc.JdbcChatService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TgChatApiController implements TgChatApi {
+    private final JdbcChatService jdbcChatService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TgChatApiController.class);
 
@@ -24,7 +27,8 @@ public class TgChatApiController implements TgChatApi {
     private final String acceptString = "Accept";
 
     @Autowired
-    public TgChatApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public TgChatApiController(JdbcChatService jdbcChatService, ObjectMapper objectMapper, HttpServletRequest request) {
+        this.jdbcChatService = jdbcChatService;
         this.objectMapper = objectMapper;
         this.request = request;
     }
@@ -36,7 +40,7 @@ public class TgChatApiController implements TgChatApi {
                    schema = @Schema())
         @PathVariable("id") Long id
     ) {
-        String accept = request.getHeader(acceptString);
+        jdbcChatService.removeChat(id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
@@ -44,7 +48,10 @@ public class TgChatApiController implements TgChatApi {
         @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema()) @PathVariable("id")
         Long id
     ) {
-        String accept = request.getHeader(acceptString);
+        Chat chat = new Chat();
+        chat.setChatId(id);
+
+        jdbcChatService.addChat(chat);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

@@ -1,18 +1,24 @@
 package edu.java.stackoverflow;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class StackOverFlowClient {
-    private final WebClient webClient;
-    private static final String URL = "/questions/%d?order=%s&sort=%s&site=stackoverflow";
 
-    public StackOverFlowClient(WebClient webClient) {
-        this.webClient = webClient;
+    private WebClient webClient;
+    private final WebClient.Builder webClientBuilder = WebClient.builder();
+    private static final String URL = "/questions/%d?site=stackoverflow";
+    private static final String COMMENTS_URL = "/questions/%d/answers?site=stackoverflow";
+
+    public StackOverFlowClient(String baseurl) {
+        webClient = webClientBuilder.baseUrl(baseurl)
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE).build();
     }
 
-    public Mono<StackOverFlowResponse> fetchQuestion(long questionId, String sort, String order) {
-        String apiUrl = String.format(URL, questionId, sort, order);
+    public Mono<StackOverFlowResponse> fetchQuestion(long questionId) {
+        String apiUrl = String.format(URL, questionId);
 
         return webClient
             .get()

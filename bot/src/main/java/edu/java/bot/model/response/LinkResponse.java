@@ -2,7 +2,6 @@ package edu.java.bot.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.net.URI;
 import java.util.Objects;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
@@ -12,81 +11,80 @@ import org.springframework.validation.annotation.Validated;
  */
 @Setter
 @Validated
-public class LinkResponse {
-    @JsonProperty("id")
-    private Long id = null;
+public class LinkResponse   {
+  @JsonProperty("id")
+  private Long id = null;
 
-    @JsonProperty("url")
-    private URI url = null;
+  @JsonProperty("url")
+  private String url = null;
 
-    public LinkResponse id(Long id) {
-        this.id = id;
-        return this;
-    }
+  public LinkResponse id(Long id) {
+    this.id = id;
+    return this;
+  }
 
-    /**
-     * Get id
-     *
-     * @return id
-     **/
-    @Schema(description = "")
+  /**
+   * Get id
+   * @return id
+   **/
+  @Schema(description = "")
 
     public Long getId() {
-        return id;
-    }
+    return id;
+  }
 
-    public LinkResponse url(URI url) {
-        this.url = url;
-        return this;
-    }
+    public LinkResponse url(String url) {
+    this.url = url;
+    return this;
+  }
 
-    /**
-     * Get url
-     *
-     * @return url
-     **/
-    @Schema(description = "")
-    public URI getUrl() {
-        return url;
-    }
+  /**
+   * Get url
+   * @return url
+   **/
+  @Schema(description = "")
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        LinkResponse linkResponse = (LinkResponse) o;
-        return Objects.equals(this.id, linkResponse.id)
-            && Objects.equals(this.url, linkResponse.url);
-    }
+    public String getUrl() {
+    return url;
+  }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, url);
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class LinkResponse {\n");
-
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    url: ").append(toIndentedString(url)).append("\n");
-        sb.append("}");
-        return sb.toString();
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    LinkResponse linkResponse = (LinkResponse) o;
+    return Objects.equals(this.id, linkResponse.id)
+        && Objects.equals(this.url, linkResponse.url);
+  }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, url);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class LinkResponse {\n");
+
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    url: ").append(toIndentedString(url)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
+    return o.toString().replace("\n", "\n    ");
+  }
 }

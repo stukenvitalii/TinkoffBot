@@ -1,10 +1,14 @@
 app:
+  gitUrl: "https://api.github.com"
+  stackUrl: "https://api.stackexchange.com/2.3"
   scheduler:
     enable: true
     interval: 10s
     force-check-delay: 10s
 
 spring:
+  liquibase:
+    enabled: false
   application:
     name: scrapper
   autoconfigure:
