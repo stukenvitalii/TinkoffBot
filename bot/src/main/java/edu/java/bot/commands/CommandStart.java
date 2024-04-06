@@ -48,10 +48,7 @@ public class CommandStart implements Command {
 
         if (userOptional.isEmpty()) {
             User user = new User(chatId, List.of(), SessionState.BASE_STATE);
-
             userService.saveUser(user);
-//            System.out.println(new ScrapperClient(WebClient.builder().build()).addChatById(user.getId()));
-
             return SUCCESS_REGISTRATION_MESSAGE;
         }
         return ALREADY_REGISTRATED_MESSAGE;
