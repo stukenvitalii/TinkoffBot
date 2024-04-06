@@ -6,6 +6,8 @@ import edu.java.bot.model.exception.ApiException;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.users.User;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +15,7 @@ public class CommandStart implements Command {
     public static final String SUCCESS_REGISTRATION_MESSAGE = "Регистрация прошла успешно!";
     private static final String ALREADY_REGISTRATED_MESSAGE = "Вы уже зарегистрированы в боте!";
     private final UserService userService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandStart.class);
 
     public CommandStart(UserService userService) {
         this.userService = userService;
@@ -35,6 +38,7 @@ public class CommandStart implements Command {
         try {
             return registerUser(chatId);
         } catch (ApiException ex) {
+            LOGGER.error(ex.getMessage());
             return ex.getMessage();
         }
     }
