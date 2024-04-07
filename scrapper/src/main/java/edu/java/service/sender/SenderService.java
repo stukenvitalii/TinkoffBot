@@ -1,6 +1,6 @@
 package edu.java.service.sender;
 
-import edu.java.model.request.LinkUpdateRequest;
+import dto.request.LinkUpdateRequest;
 import org.springframework.stereotype.Service;
 
 @Service

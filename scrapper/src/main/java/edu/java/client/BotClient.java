@@ -1,8 +1,8 @@
 package edu.java.client;
 
+import dto.request.LinkUpdateRequest;
 import edu.java.exception.ClientException;
 import edu.java.exception.ServerException;
-import edu.java.model.request.LinkUpdateRequest;
 import edu.java.service.sender.SenderService;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;

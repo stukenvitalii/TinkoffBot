@@ -1,6 +1,6 @@
 package edu.java.service.kafka;
 
-import edu.java.model.request.LinkUpdateRequest;
+import dto.request.LinkUpdateRequest;
 import edu.java.service.sender.SenderService;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

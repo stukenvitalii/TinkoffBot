@@ -1,10 +1,10 @@
 package edu.java.controller;
 
-import edu.java.model.request.AddLinkRequest;
-import edu.java.model.request.RemoveLinkRequest;
-import edu.java.model.response.ApiErrorResponse;
-import edu.java.model.response.LinkResponse;
-import edu.java.model.response.ListLinksResponse;
+import dto.request.AddLinkRequest;
+import dto.request.RemoveLinkRequest;
+import dto.response.ApiErrorResponse;
+import dto.response.LinkResponse;
+import dto.response.ListLinksResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
