@@ -1,11 +1,11 @@
 package edu.java.configuration;
 
+import dto.request.LinkUpdateRequest;
 import edu.java.exception.ClientException;
 import edu.java.exception.ServerException;
 import edu.java.github.GitHubClient;
 import edu.java.github.GitHubRepository;
 import edu.java.model.dto.Link;
-import edu.java.model.request.LinkUpdateRequest;
 import edu.java.service.LinkService;
 import edu.java.service.sender.SenderService;
 import edu.java.stackoverflow.StackOverFlowClient;
@@ -60,10 +60,6 @@ public class LinkUpdateScheduler {
             } else if (link.getUrl().getHost().equals("stackoverflow.com")) {
                 updateStackOverFlowLink(link, now);
             }
-            //! this is for testing
-            // TODO remove
-            LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(link.getId(), link.getUrl(), "Обновление данных", List.of(link.getChatId()));
-            senderService.updateLink(linkUpdateRequest);
         }
     }
 
@@ -93,7 +89,8 @@ public class LinkUpdateScheduler {
                         + "появился новый комментарий";
                     linkService.updateCountOfCommentsById(link.getId(), question.getCommentCount());
                 }
-                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(link.getId(), link.getUrl(), description, List.of(link.getChatId()));
+                LinkUpdateRequest linkUpdateRequest =
+                    new LinkUpdateRequest(link.getId(), link.getUrl(), description, List.of(link.getChatId()));
                 senderService.updateLink(linkUpdateRequest);
             }
         } catch (ClientException | ServerException e) {
@@ -111,7 +108,8 @@ public class LinkUpdateScheduler {
             Timestamp lastPush = rep.getLastPush();
 
             if (lastPush.after(link.getLastCheckTime())) {
-                LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(link.getId(), link.getUrl(), "Обновление данных", List.of(link.getChatId()));
+                LinkUpdateRequest linkUpdateRequest =
+                    new LinkUpdateRequest(link.getId(), link.getUrl(), "Обновление данных", List.of(link.getChatId()));
                 senderService.updateLink(linkUpdateRequest);
                 linkService.updateLinkLastCheckTimeById(link.getId(), now);
             }

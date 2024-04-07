@@ -42,5 +42,6 @@ public record ApplicationConfig(
 
     public record Bucket(@NotNull int capacity, @NotNull int refill, @NotNull int timeout) {
     }
+
     public record Kafka(@NotNull String topics, @NotNull int partitionsNum, @NotNull int replicasNum) {}
 }
