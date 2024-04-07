@@ -1,19 +1,16 @@
-package edu.java.model.response;
+package dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 @Setter
 @Getter
 @AllArgsConstructor
-@Validated
 public class ApiErrorResponse {
     @JsonProperty("description")
     private String description = null;
@@ -28,7 +25,6 @@ public class ApiErrorResponse {
     private String exceptionMessage = null;
 
     @JsonProperty("stacktrace")
-    @Valid
     private List<String> stacktrace = null;
 
     public ApiErrorResponse description(String description) {

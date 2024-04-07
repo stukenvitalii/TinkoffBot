@@ -1,17 +1,12 @@
-package edu.java.model.request;
+package dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.net.URL;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * RemoveLinkRequest
  */
-@Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
-                            date = "2024-02-29T17:43:31.402605197Z[GMT]")
 public class RemoveLinkRequest {
     @JsonProperty("link")
     private URL link = null;
@@ -26,7 +21,6 @@ public class RemoveLinkRequest {
      *
      * @return link
      **/
-    @Schema(description = "")
 
     public URL getLink() {
         return link;
