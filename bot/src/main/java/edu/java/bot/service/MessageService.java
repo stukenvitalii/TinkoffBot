@@ -3,8 +3,8 @@ package edu.java.bot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import dto.request.LinkUpdateRequest;
 import edu.java.bot.model.SessionState;
-import edu.java.bot.model.request.LinkUpdateRequest;
 import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
@@ -139,8 +139,8 @@ public class MessageService implements MessageServiceInterface {
             try {
                 telegramBot.execute(new SendMessage(
                     id,
-                    "New update from link " + linkUpdateRequest.getUrl().toString() + " message: " +
-                        linkUpdateRequest.getDescription()
+                    "New update from link " + linkUpdateRequest.getUrl().toString() + " message: "
+                        + linkUpdateRequest.getDescription()
                 ));
             } catch (Exception ex) {
                 return;

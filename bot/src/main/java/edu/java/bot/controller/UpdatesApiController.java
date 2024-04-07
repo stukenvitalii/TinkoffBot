@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.model.request.LinkUpdateRequest;
+import dto.request.LinkUpdateRequest;
 import edu.java.bot.service.MessageServiceInterface;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

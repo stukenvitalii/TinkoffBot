@@ -1,7 +1,7 @@
 package edu.java.bot.service;
 
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.request.LinkUpdateRequest;
+import dto.request.LinkUpdateRequest;
 import edu.java.bot.users.User;
 import java.net.URI;
 import java.util.List;
@@ -27,5 +27,6 @@ public interface MessageServiceInterface {
 
     private void updateTrackSitesAndCommit(User user, List<URI> trackSites) {
     }
-    void sendNotification(LinkUpdateRequest linkUpdateRequest) ;
+
+    void sendNotification(LinkUpdateRequest linkUpdateRequest);
 }
