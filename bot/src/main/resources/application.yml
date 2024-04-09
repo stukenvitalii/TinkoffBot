@@ -32,3 +32,17 @@ springdoc:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+management:
+  server:
+    port: 8082 # Порт для management endpoints
+  endpoints:
+    web:
+      exposure:
+        include: "info, health, prometheus" # Включение info, health и prometheus endpoints
+      path-mapping:
+        prometheus: metrics
+      base-path: /
+  metrics:
+    tags:
+      application: ${spring.application.name}
