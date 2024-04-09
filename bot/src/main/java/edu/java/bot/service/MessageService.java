@@ -9,6 +9,8 @@ import edu.java.bot.processor.CommandHandler;
 import edu.java.bot.repository.UserService;
 import edu.java.bot.url_processor.UrlProcessor;
 import edu.java.bot.users.User;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,16 +31,20 @@ public class MessageService implements MessageServiceInterface {
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
     private final TelegramBot telegramBot;
+    private final MeterRegistry meterRegistry;
 
     public MessageService(
         CommandHandler commandHandler,
         UserService userRepository,
-        UrlProcessor urlProcessor, TelegramBot telegramBot
+        UrlProcessor urlProcessor,
+        TelegramBot telegramBot,
+        MeterRegistry meterRegistry
     ) {
         this.commandHandler = commandHandler;
         this.userRepository = userRepository;
         this.urlProcessor = urlProcessor;
         this.telegramBot = telegramBot;
+        this.meterRegistry = meterRegistry;
     }
 
     public String prepareResponseMessage(Update update) {
@@ -142,10 +148,16 @@ public class MessageService implements MessageServiceInterface {
                     "New update from link " + linkUpdateRequest.getUrl().toString() + " message: "
                         + linkUpdateRequest.getDescription()
                 ));
+                increaseMessageMetric();
             } catch (Exception ex) {
                 return;
             }
         }
+    }
+
+    private void increaseMessageMetric() {
+        Counter counter = Counter.builder("messages.proceeded").tag("application", "bot").register(meterRegistry);
+        counter.increment();
     }
 }
 
