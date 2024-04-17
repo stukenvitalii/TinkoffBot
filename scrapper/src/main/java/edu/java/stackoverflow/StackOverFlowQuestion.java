@@ -25,10 +25,15 @@ public class StackOverFlowQuestion {
     private Long lastActivity;
 
     @JsonProperty("answer_count")
-    private int answerCount;
+    private Long answerCount;
+
+    private Long commentCount;
 
     public Timestamp getLastActivityAsTimestamp() {
-        return Timestamp.valueOf(
-            Instant.ofEpochSecond(lastActivity).atZone(ZoneId.systemDefault()).toLocalDateTime());
+        return Timestamp.valueOf(Instant.ofEpochSecond(
+                lastActivity)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime());
     }
+
 }

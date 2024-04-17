@@ -1,6 +1,7 @@
 package edu.java.service.jdbc;
 
 import edu.java.model.dto.Link;
+import edu.java.model.dto.LinkSof;
 import edu.java.repository.LinkRepository;
 import edu.java.service.LinkService;
 import java.sql.Timestamp;
@@ -37,6 +38,26 @@ public class JdbcLinkService implements LinkService {
 
     @Override
     public List<Link> getUnUpdatedLinks() {
-        return linkRepository.getUnUpdatedLinks();
+        return linkRepository.findUnUpdatedLinks();
+    }
+
+    @Override
+    public void updateLinkLastCheckTimeById(Long id, Timestamp lastCheckTime) {
+        linkRepository.updateLinkLastCheckTimeById(id, lastCheckTime);
+    }
+
+    @Override
+    public LinkSof getLinkPropertiesById(Long id) {
+        return linkRepository.getLinkPropertiesById(id);
+    }
+
+    @Override
+    public void updateCountOfCommentsById(Long id, Long count) {
+        linkRepository.updateCountOfCommentsById(id, count);
+    }
+
+    @Override
+    public void updateCountOfAnswersById(Long id, Long count) {
+        linkRepository.updateCountOfAnswersById(id, count);
     }
 }

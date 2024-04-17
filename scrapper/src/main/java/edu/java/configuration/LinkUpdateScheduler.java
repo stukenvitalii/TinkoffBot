@@ -59,17 +59,31 @@ public class LinkUpdateScheduler {
 
     private void updateStackOverFlowLink(Link link, Timestamp now) {
 
-        String path = link.getUrl().getPath();
-        Pattern pattern = Pattern.compile("/questions/(?<id>\\d+)");
-        Matcher matcher = pattern.matcher(path);
+        String path = link.getUrl().toString();
+        Pattern pattern = Pattern.compile("questions/(?<id>\\d+)/");
+        Matcher matcher = pattern.matcher(path); //TODO use regex
 
         StackOverFlowQuestion question =
-            stackOverFlowClient.fetchQuestion(Long.parseLong(matcher.group("id"))).block().getItems().getFirst();
+            stackOverFlowClient.fetchQuestion(Long.parseLong("3332947")).getItems().getFirst();
         Timestamp lastActivity = question.getLastActivityAsTimestamp();
 
         if (lastActivity.after(link.getLastCheckTime())) {
-            botClient.updateLink(link.getUrl(), List.of(link.getChatId()));
-            jdbcLinkService.updateLinkLastCheckTime(link.getId(), now);
+            String description = "обновление данных : ";
+            jdbcLinkService.updateLinkLastCheckTimeById(link.getId(), now);
+
+            if (question.getAnswerCount() > jdbcLinkService.getLinkPropertiesById(link.getId()).getCountOfAnswer()) {
+                description += "\n"
+                    + "появился новый ответ";
+                jdbcLinkService.updateCountOfAnswersById(link.getId(), question.getAnswerCount());
+            }
+
+            if (question.getCommentCount() > jdbcLinkService.getLinkPropertiesById(link.getId()).getCountOfComments()) {
+                description += "\n"
+                    + "появился новый комментарий";
+                jdbcLinkService.updateCountOfCommentsById(link.getId(), question.getCommentCount());
+            }
+
+            botClient.updateLink(link.getUrl(), List.of(link.getChatId()), description);
         }
     }
 
@@ -82,7 +96,7 @@ public class LinkUpdateScheduler {
         Timestamp lastPush = rep.getLastPush();
 
         if (lastPush.after(link.getLastCheckTime())) {
-            botClient.updateLink(link.getUrl(), List.of(link.getChatId()));
+            botClient.updateLink(link.getUrl(), List.of(link.getChatId()), "Обновление данных");
             jdbcLinkService.updateLinkLastCheckTime(link.getId(), now);
         }
     }
