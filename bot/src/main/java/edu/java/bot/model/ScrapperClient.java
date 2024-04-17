@@ -21,6 +21,7 @@ public class ScrapperClient {
 
     private final WebClient webClient;
 
+    //TODO add retries
     public ScrapperClient(WebClient webClient) {
         this.webClient = webClient;
     }

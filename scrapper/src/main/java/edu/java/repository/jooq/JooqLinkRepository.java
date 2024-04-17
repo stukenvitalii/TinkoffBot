@@ -2,9 +2,11 @@ package edu.java.repository.jooq;
 
 import edu.java.model.dto.Link;
 import edu.java.model.dto.LinkSof;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +44,26 @@ public class JooqLinkRepository {
             .execute();
     }
 
-    public List<Link> findUnUpdatedLinks() {
-        return dslContext.resultQuery("select * from LINK where EXTRACT(SECOND FROM (now() - last_check_time )) > 30")
-            .fetchInto(Link.class); //TODO refactor?
+    public List<Link> findUnUpdatedLinks(int linkDelay) {
+
+        OffsetDateTime timeDelay = OffsetDateTime.now().minusSeconds(linkDelay);
+
+        var list = dslContext.select()
+            .from(LINK)
+            .where(LINK.LAST_CHECK_TIME.lessOrEqual(timeDelay))
+            .fetch();
+
+        return list.map(rec -> {
+            Long id = rec.get(LINK.ID);
+            URI url = URI.create(rec.get(LINK.URL));
+            Long chatID = rec.get(LINK.CHAT_ID);
+            Timestamp lastCheckTime =
+                Timestamp.valueOf(rec.get(LINK.LAST_CHECK_TIME).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+            Timestamp createdAt =
+                Timestamp.valueOf(rec.get(LINK.CREATED_AT).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+            return new Link(id, url, chatID, lastCheckTime, createdAt);
+        });
+
     }
 
     public void updateLinkLastCheckTimeById(Long id, Timestamp timestamp) {

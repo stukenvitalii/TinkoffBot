@@ -6,6 +6,7 @@ import edu.java.model.request.RemoveLinkRequest;
 import edu.java.model.response.LinkResponse;
 import edu.java.model.response.ListLinksResponse;
 import edu.java.service.LinkService;
+import io.github.bucket4j.Bucket;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +39,9 @@ public class LinksApiController implements LinksApi {
     private final LinkService linkService;
 
     @Autowired
+    private Bucket bucket;
+
+    @Autowired
     public LinksApiController(ObjectMapper objectMapper, HttpServletRequest request, LinkService linkService) {
         this.linkService = linkService;
         this.objectMapper = objectMapper;
@@ -53,15 +57,19 @@ public class LinksApiController implements LinksApi {
         RemoveLinkRequest body
     ) {
         try {
-            return new ResponseEntity<LinkResponse>(objectMapper.readValue(
-                "{\n  \"id\" : 1,\n  \"url\" : \"http://example.com/aeiou\"\n}",
-                LinkResponse.class
-            ), HttpStatus.OK);
+            if (bucket.tryConsume(1)) {
+                return new ResponseEntity<LinkResponse>(objectMapper.readValue(
+                    "{\n  \"id\" : 1,\n  \"url\" : \"http://example.com/aeiou\"\n}",
+                    LinkResponse.class
+                ), HttpStatus.OK);
+            } else {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+            }
+
         } catch (IOException e) {
             LOGGER.error(errorString, e);
             return new ResponseEntity<LinkResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     public ResponseEntity<ListLinksResponse> linksGet(
@@ -69,15 +77,18 @@ public class LinksApiController implements LinksApi {
         @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
     ) {
         try {
-            return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
-                "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",
-                ListLinksResponse.class
-            ), HttpStatus.OK);
+            if (bucket.tryConsume(1)) {
+                return new ResponseEntity<ListLinksResponse>(objectMapper.readValue(
+                    "{\n  \"size\" : 6,\n  \"links\" : [ {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  }, {\n    \"id\" : 0,\n    \"url\" : \"http://example.com/aeiou\"\n  } ]\n}",
+                    ListLinksResponse.class
+                ), HttpStatus.OK);
+            } else {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+            }
         } catch (IOException e) {
             LOGGER.error(errorString, e);
             return new ResponseEntity<ListLinksResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     public ResponseEntity<LinkResponse> linksPost(
@@ -87,10 +98,14 @@ public class LinksApiController implements LinksApi {
         AddLinkRequest body
     ) {
         try {
-            return new ResponseEntity<LinkResponse>(objectMapper.readValue(
-                "{\n  \"id\" : 0,\n  \"url\" : \"http://example.com/aeiou\"\n}",
-                LinkResponse.class
-            ), HttpStatus.OK);
+            if (bucket.tryConsume(1)) {
+                return new ResponseEntity<LinkResponse>(objectMapper.readValue(
+                    "{\n  \"id\" : 0,\n  \"url\" : \"http://example.com/aeiou\"\n}",
+                    LinkResponse.class
+                ), HttpStatus.OK);
+            } else {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+            }
         } catch (IOException e) {
             LOGGER.error(errorString, e);
             return new ResponseEntity<LinkResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
