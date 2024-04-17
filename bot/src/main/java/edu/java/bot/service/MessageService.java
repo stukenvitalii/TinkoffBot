@@ -13,6 +13,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +30,7 @@ public class MessageService {
     private final UserService userRepository;
     private final UrlProcessor urlProcessor;
     private final TelegramBot telegramBot;
-//    private Logger logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 
     public MessageService(
         CommandHandler commandHandler,
@@ -71,8 +73,10 @@ public class MessageService {
                 throw new URISyntaxException(text, INVALID_COMMAND_MESSAGE);
             }
         } catch (URISyntaxException e) {
+            LOGGER.error(e.getReason());
             return e.getReason();
         } catch (MalformedURLException ex) {
+            LOGGER.error(ex.getMessage());
             return ex.getMessage();
         }
     }
@@ -112,6 +116,7 @@ public class MessageService {
             updateTrackSitesAndCommit(user, trackSites);
             return true;
         } catch (Exception ex) {
+            LOGGER.error(ex.getMessage());
             return false;
         }
     }
@@ -121,7 +126,6 @@ public class MessageService {
         if (!trackSites.contains(uri)) {
             return false;
         }
-
         trackSites.remove(uri);
         updateTrackSitesAndCommit(user, trackSites);
 
@@ -145,7 +149,7 @@ public class MessageService {
                     "New update from link " + url.toString() + " message: " + description
                 ));
             } catch (Exception ex) {
-//                logger.warning("User is not registered");
+                LOGGER.warn("User is not registered");
                 return;
             }
         }

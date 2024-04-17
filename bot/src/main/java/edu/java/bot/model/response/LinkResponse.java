@@ -16,7 +16,7 @@ public class LinkResponse   {
   private Long id = null;
 
   @JsonProperty("url")
-  private String url = null; //TODO изменить на URL
+  private String url = null;
 
   public LinkResponse id(Long id) {
     this.id = id;
