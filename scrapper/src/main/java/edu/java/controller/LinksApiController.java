@@ -5,7 +5,7 @@ import edu.java.model.request.AddLinkRequest;
 import edu.java.model.request.RemoveLinkRequest;
 import edu.java.model.response.LinkResponse;
 import edu.java.model.response.ListLinksResponse;
-import edu.java.service.jdbc.JdbcLinkService;
+import edu.java.service.LinkService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
            date = "2024-02-29T10:09:42.512141887Z[GMT]")
 @RestController
 public class LinksApiController implements LinksApi {
-    private final JdbcLinkService jdbcLinkService;
     private static final Logger LOGGER = LoggerFactory.getLogger(LinksApiController.class);
     private final String acceptString = "Accept";
     private final String applicationJsonString = "application/json";
@@ -36,9 +35,11 @@ public class LinksApiController implements LinksApi {
 
     private final HttpServletRequest request;
 
+    private final LinkService linkService;
+
     @Autowired
-    public LinksApiController(JdbcLinkService jdbcLinkService, ObjectMapper objectMapper, HttpServletRequest request) {
-        this.jdbcLinkService = jdbcLinkService;
+    public LinksApiController(ObjectMapper objectMapper, HttpServletRequest request, LinkService linkService) {
+        this.linkService = linkService;
         this.objectMapper = objectMapper;
         this.request = request;
     }
@@ -51,8 +52,6 @@ public class LinksApiController implements LinksApi {
         @RequestBody
         RemoveLinkRequest body
     ) {
-
-        jdbcLinkService.removeLink(2L);
         try {
             return new ResponseEntity<LinkResponse>(objectMapper.readValue(
                 "{\n  \"id\" : 1,\n  \"url\" : \"http://example.com/aeiou\"\n}",

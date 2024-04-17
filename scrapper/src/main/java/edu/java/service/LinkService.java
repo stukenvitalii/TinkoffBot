@@ -12,8 +12,6 @@ public interface LinkService {
 
     void removeLink(Long id);
 
-    void updateLinkLastCheckTime(Long id, Timestamp lastCheckTime);
-
     List<Link> getUnUpdatedLinks();
 
     void updateLinkLastCheckTimeById(Long id, Timestamp lastCheckTime);

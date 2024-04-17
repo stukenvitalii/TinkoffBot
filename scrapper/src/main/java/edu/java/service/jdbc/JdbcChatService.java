@@ -1,30 +1,28 @@
 package edu.java.service.jdbc;
 
 import edu.java.model.dto.Chat;
-import edu.java.repository.ChatRepository;
+import edu.java.repository.jdbc.JdbcChatRepository;
 import edu.java.service.ChatService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcChatService implements ChatService {
 
-    private final ChatRepository chatRepository;
+    private final JdbcChatRepository jdbcChatRepository;
 
     @Override
     public List<Chat> getChats() {
-        return chatRepository.findAll();
+        return jdbcChatRepository.findAll();
     }
 
     @Override
     public void addChat(Chat chat) {
-        chatRepository.add(chat);
+        jdbcChatRepository.add(chat);
     }
 
     @Override
     public void removeChat(Long id) {
-        chatRepository.remove(id);
+        jdbcChatRepository.remove(id);
     }
 }

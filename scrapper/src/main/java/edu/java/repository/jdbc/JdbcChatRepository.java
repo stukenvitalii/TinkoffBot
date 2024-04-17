@@ -1,4 +1,4 @@
-package edu.java.repository;
+package edu.java.repository.jdbc;
 
 import edu.java.model.dto.Chat;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class ChatRepository {
+public class JdbcChatRepository {
     private final JdbcClient jdbcClient;
 
     @Transactional
