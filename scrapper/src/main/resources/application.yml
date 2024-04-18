@@ -10,7 +10,7 @@ app:
   retry:
     trigger: server-client
     strategy: const
-    max-attempts: 3
+    max-attempts: 10
     delay: 5
   bucket:
     refill: 5
@@ -54,3 +54,17 @@ springdoc:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+management:
+  server:
+    port: 8081 # Порт для management endpoints
+  endpoints:
+    web:
+      exposure:
+        include: "info, health, prometheus" # Включение info, health и prometheus endpoints
+      path-mapping:
+        prometheus: metrics
+      base-path: /
+  metrics:
+    tags:
+      application: ${spring.application.name}

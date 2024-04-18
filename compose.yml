@@ -72,8 +72,35 @@ services:
         SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
       ports:
         - "28081:8081"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - ./data:/var/lib/grafana
+    networks:
+      - grafana
 volumes:
   postgresql: { }
+  grafana_storage: {}
 
 networks:
   backend: { }
+  grafana:
