@@ -42,7 +42,7 @@ jobs:
           title: Code Coverage
           update-comment: true
       - name: Docker image build
-        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} -f ${{ github.workspace }}/scrapper/scrapper.Dockerfile ${{ github.workspace }}/bot
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} -f ${{ github.workspace }}/scrapper/scrapper.Dockerfile ${{ github.workspace }}/scrapper
 
       - name: Log in to the Container registry
         if: github.ref == 'refs/heads/hw10'
